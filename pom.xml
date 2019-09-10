@@ -131,76 +131,6 @@
         
         <pluginManagement>
             <plugins>
-                
-                <!-- Generates the javadocs for all non-test projects. -->
-                <plugin>
-                    <groupId>org.apache.maven.plugins</groupId>
-                    <artifactId>maven-javadoc-plugin</artifactId>
-                    <version>2.10.4</version>
-                    <configuration>
-                        <additionalJOptions>
-                            <additionalJOption>-J-DjuneauVersion=${juneauVersion}</additionalJOption>
-                            <additionalJOption>-J-DjuneauVersionNext=${juneauVersionNext}</additionalJOption>
-                        </additionalJOptions>
-                        <show>protected</show>
-                        <windowtitle>${project.name} ${project.version}</windowtitle>
-                        <author>true</author>
-                        <linksource>true</linksource>
-                        <source>1.8</source>
-                        <bootclasspath>${sun.boot.class.path}</bootclasspath>
-                        <overview>${basedir}/juneau-doc/src/main/javadoc/overview.html</overview>
-                        <stylesheetfile>${basedir}/juneau-doc/src/main/javadoc/javadoc.css</stylesheetfile>
-                        <use>false</use>
-                        <additionalparam>-sourcetab 3 -notimestamp -Xdoclint:none --allow-script-in-comments</additionalparam>
-                        <verbose>false</verbose>
-                        <excludePackageNames>*proto*:*test*:org.apache.juneau.doc.internal</excludePackageNames>
-                        <linksource>true</linksource>
-                        <links>
-                            <link>https://docs.oracle.com/javase/8/docs/api/</link>
-                            <link>https://docs.oracle.com/javaee/5/api/</link>
-                        </links>
-                        <docfilessubdirs>true</docfilessubdirs>
-                        <javadocDirectory>${basedir}/juneau-doc/src/main/javadoc</javadocDirectory>
-                        <taglets>
-                            <taglet>
-                                <tagletClass>org.apache.juneau.doc.internal.DocTag</tagletClass>
-                                <tagletpath>${basedir}/juneau-doc/juneau-doc.jar</tagletpath>
-                            </taglet>
-                            <taglet>
-                                <tagletClass>org.apache.juneau.doc.internal.PropertyTag</tagletClass>
-                                <tagletpath>${basedir}/juneau-doc/juneau-doc.jar</tagletpath>
-                            </taglet>
-                            <taglet>
-                                <tagletClass>org.apache.juneau.doc.internal.FragmentTag</tagletClass>
-                                <tagletpath>${basedir}/juneau-doc/juneau-doc.jar</tagletpath>
-                            </taglet>
-                            <taglet>
-                                <tagletClass>org.apache.juneau.doc.internal.SourceTag</tagletClass>
-                                <tagletpath>${basedir}/juneau-doc/juneau-doc.jar</tagletpath>
-                            </taglet>
-                            
-                            <!--org.apache.juneau.doc.internal.DocTag</taglet-->
-                            <!-- taglet>org.apache.juneau.doc.internal.PropertyTag</taglet-->
-                        </taglets>
-                        <tagletpath>${basedir}/juneau-doc/juneau-doc.jar</tagletpath>
-                    </configuration>
-                    <executions>
-                        <execution>
-                            <id>attach-javadocs</id>
-                            <goals>
-                                <goal>jar</goal>
-                            </goals>
-                        </execution>
-                        <execution>
-                            <id>aggregate</id>
-                            <phase>site</phase>
-                            <goals>
-                                <goal>aggregate</goal>
-                            </goals>
-                        </execution>
-                    </executions>
-                </plugin>
-                
                 <plugin>
                     <artifactId>maven-compiler-plugin</artifactId>
                     <configuration>
@@ -239,50 +169,7 @@
             </plugins>
         </pluginManagement>
     </build>
-    
-    <reporting>
-        <plugins>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-javadoc-plugin</artifactId>
-                <version>2.10.4</version>
-            </plugin>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-jxr-plugin</artifactId>
-                <version>2.5</version>
-            </plugin>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-surefire-report-plugin</artifactId>
-                <version>2.18</version>
-                <configuration>
-                    <aggregate>true</aggregate>
-                </configuration>
-            </plugin>
-            <plugin>
-                <groupId>org.jacoco</groupId>
-                <artifactId>jacoco-maven-plugin</artifactId>
-                <version>0.8.2</version>
-                <configuration>
-                    <excludes>
-                        <exclude>**/doc/**/*</exclude>
-                        <exclude>**/examples/**/*</exclude>
-                        <exclude>**/testutils/**/*</exclude>
-                    </excludes>
-                    <fileSets>
-                        <fileSet implementation="org.apache.maven.shared.model.fileset.FileSet">
-                            <directory>${project.parent.build.directory}</directory>
-                            <includes>
-                                <include>*.exec</include>
-                            </includes>
-                        </fileSet>
-                    </fileSets>
-                </configuration>
-            </plugin>
-        </plugins>
-    </reporting>
-    
+        
     <url>https://juneau.apache.org/</url>
     <!-- Inherited from parent pom
      <organization>
@@ -290,12 +177,12 @@
      <url>https://www.apache.org/</url>
      </organization>
      -->
-    <inceptionYear>2016</inceptionYear>
+    <inceptionYear>2019</inceptionYear>
     
     <scm>
-        <connection>scm:git:https://gitbox.apache.org/repos/asf/juneau.git</connection>
-        <developerConnection>scm:git:https://gitbox.apache.org/repos/asf/juneau.git</developerConnection>
-        <url>https://github.com/apache/juneau</url>
+        <connection>scm:git:https://gitbox.apache.org/repos/asf/juneau-petstore.git</connection>
+        <developerConnection>scm:git:https://gitbox.apache.org/repos/asf/juneau-petstore.git</developerConnection>
+        <url>https://github.com/apache/juneau-petstore</url>
         <tag>HEAD</tag>
     </scm>
     <issueManagement>

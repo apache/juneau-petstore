@@ -13,6 +13,21 @@
  ***************************************************************************************************************************
 -->
 
-# Juneau
+# Juneau Petstore
 
-Please visit the [home page](http://juneau.apache.org) for more information about this project.
+A sample application that shows the capabilities of the Juneau REST platform with Spring Boot and other technologies
+to produce end-to-end REST microservices.
+
+Juneau provides the following capabilities:
+
+- Ability to serialize/parse Java POJOs to a wide variety of languages.
+- Ability to construct REST interfaces using annotated POJOs.
+- Ability to create Java interface proxies against remote REST interfaces.
+
+The project is broken down into the following subprojects:
+
+- juneau-petstore-api - Contains the Java interface and DTOs for the petstore application.
+- juneau-petstore-server - Contains the server-side Java implementation of the petstore Java interface as a REST resource.
+- juneau-petstore-client - Contains the client-side Java proxy of the petstore Java interface.
+
+More information for this project can be found [here](http://juneau.apache.org/index.html#petstore.html)
