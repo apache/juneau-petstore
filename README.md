@@ -13,7 +13,7 @@
  ***************************************************************************************************************************
 -->
 
-# Juneau Petstore
+# Juneau Pet Store Application
 
 A sample application that shows the capabilities of the Juneau REST platform with Spring Boot and other technologies
 to produce end-to-end REST microservices.
