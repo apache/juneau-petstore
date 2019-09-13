@@ -174,13 +174,13 @@ public class PetStoreResource extends BasicRest implements PetStore {
 		swagger=@MethodSwagger(
 			tags="pet",
 			parameters={
-				Queryable.SWAGGER_PARAMS
+				Queryable.SWAGGER_PARAMS  // Documents searching.
 			}
 		),
-		converters={Queryable.class}
+		converters={Queryable.class}  // Searching support.
 	)
 	@BeanConfig(
-		bpx="Pet: tags,photo"
+		bpx="Pet: tags,photo"  // In this view, don't serialize tags/photos properties.
 	)
 	public Collection<Pet> getPets() throws NotAcceptable {
 		return store.getPets();
@@ -193,10 +193,7 @@ public class PetStoreResource extends BasicRest implements PetStore {
 		summary="Find pet by ID",
 		description="Returns a single pet",
 		swagger=@MethodSwagger(
-			tags="pet",
-			value={
-				"security:[ { api_key:[] } ]"
-			}
+			tags="pet"
 		)
 	)
 	public Pet getPet(long petId) throws IdNotFound, NotAcceptable {
@@ -209,11 +206,9 @@ public class PetStoreResource extends BasicRest implements PetStore {
 		path="/pet",
 		summary="Add a new pet to the store",
 		swagger=@MethodSwagger(
-			tags="pet",
-			value={
-				"security:[ { petstore_auth:['write:pets','read:pets'] } ]"
-			}
+			tags="pet"
 		)
+		//roleGuard="ROLE_ADMIN || (ROLE_USER && ROLE_WRITABLE)"  // Restrict access to this method.
 	)
 	public long createPet(CreatePet pet) throws IdConflict, NotAcceptable, UnsupportedMediaType {
 		return store.create(pet).getId();
@@ -225,10 +220,7 @@ public class PetStoreResource extends BasicRest implements PetStore {
 		path="/pet/{petId}",
 		summary="Update an existing pet",
 		swagger=@MethodSwagger(
-			tags="pet",
-			value={
-				"security:[ { petstore_auth: ['write:pets','read:pets'] } ]"
-			}
+			tags="pet"
 		)
 	)
 	public Ok updatePet(UpdatePet pet) throws IdNotFound, NotAcceptable, UnsupportedMediaType {
@@ -243,10 +235,7 @@ public class PetStoreResource extends BasicRest implements PetStore {
 		summary="Finds Pets by status",
 		description="Multiple status values can be provided with comma separated strings.",
 		swagger=@MethodSwagger(
-			tags="pet",
-			value={
-				"security:[{petstore_auth:['write:pets','read:pets']}]"
-			}
+			tags="pet"
 		)
 	)
 	public Collection<Pet> findPetsByStatus(PetStatus[] status) throws NotAcceptable {
@@ -260,10 +249,7 @@ public class PetStoreResource extends BasicRest implements PetStore {
 		summary="Finds Pets by tags",
 		description="Multiple tags can be provided with comma separated strings. Use tag1, tag2, tag3 for testing.",
 		swagger=@MethodSwagger(
-			tags="pet",
-			value={
-				"security:[ { petstore_auth:[ 'write:pets','read:pets' ] } ]"
-			}
+			tags="pet"
 		)
 	)
 	@Deprecated
@@ -277,10 +263,7 @@ public class PetStoreResource extends BasicRest implements PetStore {
 		path="/pet/{petId}",
 		summary="Deletes a pet",
 		swagger=@MethodSwagger(
-			tags="pet",
-			value={
-				"security:[ { petstore_auth:[ 'write:pets','read:pets' ] } ]"
-			}
+			tags="pet"
 		)
 	)
 	public Ok deletePet(String apiKey, long petId) throws IdNotFound, NotAcceptable {
@@ -396,9 +379,6 @@ public class PetStoreResource extends BasicRest implements PetStore {
 			tags="store",
 			responses={
 				"200:{ 'x-example':{AVAILABLE:123} }",
-			},
-			value={
-				"security:[ { api_key:[] } ]"
 			}
 		)
 	)
