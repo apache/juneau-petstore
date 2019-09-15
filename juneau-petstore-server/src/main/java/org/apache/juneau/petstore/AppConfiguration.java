@@ -19,6 +19,7 @@ import org.springframework.boot.web.servlet.*;
 import org.springframework.context.annotation.*;
 import org.springframework.web.filter.*;
 
+@SuppressWarnings("javadoc")
 @Configuration
 public class AppConfiguration {
 

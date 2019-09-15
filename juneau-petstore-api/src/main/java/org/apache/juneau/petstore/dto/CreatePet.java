@@ -44,7 +44,6 @@ public class CreatePet {
 	 * @param price The <bc>price</bc> property value.
 	 * @param species The <bc>species</bc> property value.
 	 * @param tags The <bc>tags</bc> property value.
-	 * @param photo The <bc>photo</bc> property value.
 	 */
 	public CreatePet(String name, float price, Species species, String[] tags) {
 		this.name = name;

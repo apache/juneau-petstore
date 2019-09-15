@@ -19,6 +19,7 @@ package org.apache.juneau.petstore.dto;
  * 	<li class='extlink'>{@source}
  * </ul>
  */
+@SuppressWarnings("javadoc")
 public enum Species {
 	BIRD, CAT, DOG, FISH, MOUSE, RABBIT, SNAKE;
 }

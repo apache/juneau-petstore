@@ -29,6 +29,7 @@ import org.apache.juneau.rest.client.*;
  * <p>
  * The remote proxy allows you to make REST calls against our REST interface through Java interface method calls.
  */
+@SuppressWarnings("javadoc")
 public class Main {
 
 	private static final JsonParser JSON_PARSER = JsonParser.create().ignoreUnknownBeanProperties().build();
@@ -59,7 +60,6 @@ public class Main {
 	 * Initialize the petstore database by using a remote resource interface against our REST.
 	 *
 	 * @param w Console output.
-	 * @return This object (for method chaining).
 	 * @throws ParseException Malformed input encountered.
 	 * @throws IOException Thrown by client stream.
 	 */

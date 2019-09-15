@@ -377,8 +377,6 @@ public interface PetStore {
 	 * @param password The password for login in clear text.
 	 * @param rateLimit Calls per hour allowed by the user.
 	 * @param expiresAfter The <bc>Expires-After</bc> response header.
-	 * @param req The servlet request.
-	 * @param res The servlet response.
 	 * @return {@link Ok} if successful.
 	 * @throws InvalidLogin Login was unsuccessful.
 	 * @throws NotAcceptable Unsupported <c>Accept</c> header specified.

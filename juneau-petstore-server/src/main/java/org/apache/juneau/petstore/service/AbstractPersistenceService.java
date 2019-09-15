@@ -170,6 +170,7 @@ public class AbstractPersistenceService {
 	 * @param query The JPA query.
 	 * @param t The bean type.
 	 * @param searchArgs Optional search arguments.
+	 * @param pageArgs Optional paging arguments.
 	 * @return The results.
 	 */
 	protected <T> List<T> query(EntityManager em, String query, Class<T> t, SearchArgs searchArgs, PageArgs pageArgs) {
@@ -182,12 +183,13 @@ public class AbstractPersistenceService {
 	}
 
 	/**
-	 * Same as {@link #query(EntityManager,String,Class,SearchArgs)} but uses a new entity manager.
+	 * Same as {@link #query(EntityManager,String,Class,SearchArgs,PageArgs)} but uses a new entity manager.
 	 *
 	 * @param <T> The bean type.
 	 * @param query The JPA query.
 	 * @param t The bean type.
 	 * @param searchArgs Optional search arguments.
+	 * @param pageArgs Optional paging arguments.
 	 * @return The results.
 	 */
 	protected <T> List<T> query(String query, Class<T> t, SearchArgs searchArgs, PageArgs pageArgs) {

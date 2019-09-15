@@ -20,9 +20,10 @@ import org.springframework.boot.builder.SpringApplicationBuilder;
  * Entry point for PetStore application.
  */
 @SpringBootApplication
+@SuppressWarnings("javadoc")
 public class App {
 
-    public static void main(String[] args) {
+	public static void main(String[] args) {
         new App().start(args);
     }
 
