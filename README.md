@@ -31,3 +31,13 @@ The project is broken down into the following subprojects:
 - juneau-petstore-client - Contains the client-side Java proxy of the petstore Java interface.
 
 More information for this project can be found [here](http://juneau.apache.org/index.html#petstore.html)
+
+## Jira Issues
+
+ - [JUNEAU-148](https://issues.apache.org/jira/projects/JUNEAU/issues/JUNEAU-148) - Replace exiting persistence with Spring Data.
+ - [JUNEAU-149](https://issues.apache.org/jira/projects/JUNEAU/issues/JUNEAU-149) - Add UI on top of PetStore application.
+ - [JUNEAU-150](https://issues.apache.org/jira/projects/JUNEAU/issues/JUNEAU-150) - Use Spring Security to add user roles to HTTP requests.
+ - [JUNEAU-151](https://issues.apache.org/jira/projects/JUNEAU/issues/JUNEAU-151) - Add Spring Cache support.
+ - [JUNEAU-152](https://issues.apache.org/jira/projects/JUNEAU/issues/JUNEAU-152) - Add a docker-compose deployment yaml and documentation.
+ - [JUNEAU-153](https://issues.apache.org/jira/projects/JUNEAU/issues/JUNEAU-153) - Add login/logout support.
+ - [JUNEAU-154](https://issues.apache.org/jira/projects/JUNEAU/issues/JUNEAU-154) - Add mock testing.
