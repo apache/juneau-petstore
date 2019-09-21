@@ -20,7 +20,7 @@
     <parent>
         <groupId>org.apache.juneau.petstore</groupId>
         <artifactId>juneau-petstore</artifactId>
-        <version>8.1.1-SNAPSHOT</version>
+        <version>8.1.2-SNAPSHOT</version>
     </parent>
 
     <artifactId>juneau-petstore-api</artifactId>
