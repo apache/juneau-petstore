@@ -22,8 +22,15 @@ import javax.persistence.*;
 import org.apache.juneau.json.*;
 import org.apache.juneau.parser.*;
 import org.apache.juneau.petstore.dto.*;
-import org.apache.juneau.pojotools.*;
-import org.apache.juneau.pojotools.SearchArgs;
+import org.apache.juneau.petstore.repository.OrderRepository;
+import org.apache.juneau.petstore.repository.PetRepository;
+import org.apache.juneau.petstore.repository.UserRepository;
+//import org.apache.juneau.pojotools.*;
+//import org.apache.juneau.pojotools.SearchArgs;
+import org.springframework.beans.factory.annotation.Autowired;
+
+
+
 
 /**
  * Pet store database application.
@@ -37,6 +44,15 @@ import org.apache.juneau.pojotools.SearchArgs;
  */
 public class PetStoreService extends AbstractPersistenceService {
 
+	
+	@Autowired
+	private PetRepository petRepository;
+	
+	@Autowired
+	private UserRepository userRepository;
+	
+	@Autowired
+	private OrderRepository orderRepository;
 	//-----------------------------------------------------------------------------------------------------------------
 	// Initialization methods.
 	//-----------------------------------------------------------------------------------------------------------------
@@ -104,7 +120,7 @@ public class PetStoreService extends AbstractPersistenceService {
 	 * @throws IdNotFound If pet was not found.
 	 */
 	public Pet getPet(long id) throws IdNotFound {
-		return find(Pet.class, id);
+		return petRepository.getOne(id);
 	}
 
 	/**
@@ -115,7 +131,7 @@ public class PetStoreService extends AbstractPersistenceService {
 	 * @throws IdNotFound If order was not found.
 	 */
 	public Order getOrder(long id) throws IdNotFound {
-		return find(Order.class, id);
+		return orderRepository.getOne(id);
 	}
 
 	/**
@@ -128,7 +144,7 @@ public class PetStoreService extends AbstractPersistenceService {
 	 */
 	public User getUser(String username) throws InvalidUsername, IdNotFound  {
 		assertValidUsername(username);
-		return find(User.class, username);
+		return userRepository.findByUsername(username);
 	}
 
 	/**
@@ -137,7 +153,7 @@ public class PetStoreService extends AbstractPersistenceService {
 	 * @return All pets in the database.
 	 */
 	public List<Pet> getPets() {
-		return query("select X from PetstorePet X", Pet.class, (SearchArgs)null, (PageArgs)null);
+		return petRepository.findAll();
 	}
 
 	/**
@@ -146,7 +162,7 @@ public class PetStoreService extends AbstractPersistenceService {
 	 * @return All orders in the database.
 	 */
 	public List<Order> getOrders() {
-		return query("select X from PetstoreOrder X", Order.class, (SearchArgs)null, (PageArgs)null);
+		return orderRepository.findAll();
 	}
 
 	/**
@@ -155,7 +171,7 @@ public class PetStoreService extends AbstractPersistenceService {
 	 * @return All users in the database.
 	 */
 	public List<User> getUsers() {
-		return query("select X from PetstoreUser X", User.class, (SearchArgs)null, (PageArgs)null);
+		return userRepository.findAll();
 	}
 
 	/**
@@ -165,6 +181,7 @@ public class PetStoreService extends AbstractPersistenceService {
 	 * @return a new {@link Pet} object.
 	 */
 	public Pet create(CreatePet c) {
+		
 		return merge(new Pet().status(PetStatus.AVAILABLE).apply(c));
 	}
 
@@ -233,8 +250,7 @@ public class PetStoreService extends AbstractPersistenceService {
 	 * @throws IdNotFound Pet was not found.
 	 */
 	public void removePet(long id) throws IdNotFound {
-		EntityManager em = getEntityManager();
-		remove(em, find(em, Pet.class, id));
+		petRepository.deleteById(id);
 	}
 
 	/**
@@ -244,8 +260,7 @@ public class PetStoreService extends AbstractPersistenceService {
 	 * @throws IdNotFound Order was not found.
 	 */
 	public void removeOrder(long id) throws IdNotFound {
-		EntityManager em = getEntityManager();
-		remove(em, find(em, Order.class, id));
+		orderRepository.deleteById(id);
 	}
 
 	/**
@@ -255,8 +270,7 @@ public class PetStoreService extends AbstractPersistenceService {
 	 * @throws IdNotFound User was not found.
 	 */
 	public void removeUser(String username) throws IdNotFound {
-		EntityManager em = getEntityManager();
-		remove(em, find(em, User.class, username));
+		userRepository.deleteByUsername(username);
 	}
 
 	/**
