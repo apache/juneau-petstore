@@ -180,9 +180,8 @@ public class PetStoreService extends AbstractPersistenceService {
 	 * @param c The pet input data.
 	 * @return a new {@link Pet} object.
 	 */
-	public Pet create(CreatePet c) {
-		
-		return merge(new Pet().status(PetStatus.AVAILABLE).apply(c));
+	public Pet create(CreatePet c) {	
+		return petRepository.save((new Pet().status(PetStatus.AVAILABLE).apply(c)));
 	}
 
 	/**
@@ -192,7 +191,7 @@ public class PetStoreService extends AbstractPersistenceService {
 	 * @return a new {@link Order} object.
 	 */
 	public Order create(CreateOrder c) {
-		return merge(new Order().status(OrderStatus.PLACED).apply(c));
+		return orderRepository.save((new Order().status(OrderStatus.PLACED).apply(c)));
 	}
 
 	/**
@@ -202,7 +201,7 @@ public class PetStoreService extends AbstractPersistenceService {
 	 * @return a new {@link User} object.
 	 */
 	public User create(User c) {
-		return merge(new User().apply(c));
+		return userRepository.save((new User().apply(c)));
 	}
 
 	/**
@@ -213,8 +212,8 @@ public class PetStoreService extends AbstractPersistenceService {
 	 * @throws IdNotFound Pet was not found.
 	 */
 	public Pet update(UpdatePet u) throws IdNotFound {
-		EntityManager em = getEntityManager();
-		return merge(em, find(em, Pet.class, u.getId()).apply(u));
+		Pet pet =  petRepository.findById(u.getId()).get();		
+		return petRepository.save(pet.apply(u));
 	}
 
 	/**
@@ -225,8 +224,8 @@ public class PetStoreService extends AbstractPersistenceService {
 	 * @throws IdNotFound Order was not found.
 	 */
 	public Order update(Order o) throws IdNotFound {
-		EntityManager em = getEntityManager();
-		return merge(em, find(em, Order.class, o.getId()).apply(o));
+		Order order =  orderRepository.findById(o.getId()).get();		
+		return orderRepository.save(order.apply(o));
 	}
 
 	/**
@@ -238,9 +237,8 @@ public class PetStoreService extends AbstractPersistenceService {
 	 * @throws InvalidUsername The username was not valid.
 	 */
 	public User update(User u) throws IdNotFound, InvalidUsername {
-		assertValidUsername(u.getUsername());
-		EntityManager em = getEntityManager();
-		return merge(em, find(em, User.class, u.getUsername()).apply(u));
+		User user =  userRepository.findByUsername(u.getUsername());		
+		return userRepository.save(user.apply(u));
 	}
 
 	/**
