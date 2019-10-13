@@ -17,7 +17,6 @@ import static java.text.MessageFormat.*;
 import java.io.*;
 import java.util.*;
 
-import javax.persistence.*;
 
 import org.apache.juneau.json.*;
 import org.apache.juneau.parser.*;
@@ -42,7 +41,7 @@ import org.springframework.beans.factory.annotation.Autowired;
  * 	<li class='extlink'>{@source}
  * </ul>
  */
-public class PetStoreService extends AbstractPersistenceService {
+public class PetStoreService {
 
 	
 	@Autowired
@@ -67,42 +66,35 @@ public class PetStoreService extends AbstractPersistenceService {
 	 */
 	public PetStoreService initDirect(PrintWriter w) throws ParseException, IOException {
 
-		EntityManager em = getEntityManager();
-		EntityTransaction et = em.getTransaction();
+		
 		JsonParser parser = JsonParser.create().build();
 
-		et.begin();
-
-		for (Pet x : em.createQuery("select X from PetstorePet X", Pet.class).getResultList()) {
-			em.remove(x);
+		for (Pet x : petRepository.findAll()) {
+			petRepository.delete(x);
 			w.println(format("Deleted pet:  id={0}", x.getId()));
 		}
-		for (Order x : em.createQuery("select X from PetstoreOrder X", Order.class).getResultList()) {
-			em.remove(x);
+		for (Order x : orderRepository.findAll()) {
+			orderRepository.delete(x);
 			w.println(format("Deleted order:  id={0}", x.getId()));
 		}
-		for (User x : em.createQuery("select X from PetstoreUser X", User.class).getResultList()) {
-			em.remove(x);
+		for (User x : userRepository.findAll()) {
+			userRepository.delete(x);
 			w.println(format("Deleted user:  username={0}", x.getUsername()));
 		}
-
-		et.commit();
-		et.begin();
+		
 
 		for (Pet x : parser.parse(getStream("init/Pets.json"), Pet[].class)) {
-			x = em.merge(x);
+			petRepository.save(x);
 			w.println(format("Created pet:  id={0}, name={1}", x.getId(), x.getName()));
 		}
 		for (Order x : parser.parse(getStream("init/Orders.json"), Order[].class)) {
-			x = em.merge(x);
+			orderRepository.save(x);
 			w.println(format("Created order:  id={0}", x.getId()));
 		}
 		for (User x: parser.parse(getStream("init/Users.json"), User[].class)) {
-			x = em.merge(x);
+			userRepository.save(x);
 			w.println(format("Created user:  username={0}", x.getUsername()));
 		}
-
-		et.commit();
 
 		return this;
 	}
@@ -278,10 +270,7 @@ public class PetStoreService extends AbstractPersistenceService {
 	 * @return Pets with the specified statuses.
 	 */
 	public Collection<Pet> getPetsByStatus(PetStatus[] status) {
-		return getEntityManager()
-			.createQuery("select X from PetstorePet X where X.status in :status", Pet.class)
-			.setParameter("status", status)
-			.getResultList();
+		return petRepository.findByStatus(status);
 	}
 
 	/**
@@ -292,10 +281,7 @@ public class PetStoreService extends AbstractPersistenceService {
 	 * @throws InvalidTag Tag name was invalid.
 	 */
 	public Collection<Pet> getPetsByTags(String[] tags) throws InvalidTag {
-		return getEntityManager()
-			.createQuery("select X from PetstorePet X where X.tags in :tags", Pet.class)
-			.setParameter("tags", tags)
-			.getResultList();
+		return petRepository.findByTags(tags);
 	}
 
 	/**
