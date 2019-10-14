@@ -29,6 +29,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 
 
 
+
 /**
  * Pet store database application.
  * <p>
@@ -110,7 +111,7 @@ public class PetStoreService {
 	 * @throws IdNotFound If pet was not found.
 	 */
 	public Pet getPet(long id) throws IdNotFound {
-		return petRepository.getOne(id);
+		return petRepository.findById(id).get();
 	}
 
 	/**
@@ -121,7 +122,7 @@ public class PetStoreService {
 	 * @throws IdNotFound If order was not found.
 	 */
 	public Order getOrder(long id) throws IdNotFound {
-		return orderRepository.getOne(id);
+		return orderRepository.findById(id).get();
 	}
 
 	/**
