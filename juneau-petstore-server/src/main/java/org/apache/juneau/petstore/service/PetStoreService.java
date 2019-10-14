@@ -17,13 +17,18 @@ import static java.text.MessageFormat.*;
 import java.io.*;
 import java.util.*;
 
-import javax.persistence.*;
 
 import org.apache.juneau.json.*;
 import org.apache.juneau.parser.*;
 import org.apache.juneau.petstore.dto.*;
-import org.apache.juneau.pojotools.*;
-import org.apache.juneau.pojotools.SearchArgs;
+import org.apache.juneau.petstore.repository.OrderRepository;
+import org.apache.juneau.petstore.repository.PetRepository;
+import org.apache.juneau.petstore.repository.UserRepository;
+import org.springframework.beans.factory.annotation.Autowired;
+
+
+
+
 
 /**
  * Pet store database application.
@@ -35,8 +40,17 @@ import org.apache.juneau.pojotools.SearchArgs;
  * 	<li class='extlink'>{@source}
  * </ul>
  */
-public class PetStoreService extends AbstractPersistenceService {
+public class PetStoreService {
 
+	
+	@Autowired
+	private PetRepository petRepository;
+	
+	@Autowired
+	private UserRepository userRepository;
+	
+	@Autowired
+	private OrderRepository orderRepository;
 	//-----------------------------------------------------------------------------------------------------------------
 	// Initialization methods.
 	//-----------------------------------------------------------------------------------------------------------------
@@ -51,42 +65,35 @@ public class PetStoreService extends AbstractPersistenceService {
 	 */
 	public PetStoreService initDirect(PrintWriter w) throws ParseException, IOException {
 
-		EntityManager em = getEntityManager();
-		EntityTransaction et = em.getTransaction();
+		
 		JsonParser parser = JsonParser.create().build();
 
-		et.begin();
-
-		for (Pet x : em.createQuery("select X from PetstorePet X", Pet.class).getResultList()) {
-			em.remove(x);
+		for (Pet x : petRepository.findAll()) {
+			petRepository.delete(x);
 			w.println(format("Deleted pet:  id={0}", x.getId()));
 		}
-		for (Order x : em.createQuery("select X from PetstoreOrder X", Order.class).getResultList()) {
-			em.remove(x);
+		for (Order x : orderRepository.findAll()) {
+			orderRepository.delete(x);
 			w.println(format("Deleted order:  id={0}", x.getId()));
 		}
-		for (User x : em.createQuery("select X from PetstoreUser X", User.class).getResultList()) {
-			em.remove(x);
+		for (User x : userRepository.findAll()) {
+			userRepository.delete(x);
 			w.println(format("Deleted user:  username={0}", x.getUsername()));
 		}
-
-		et.commit();
-		et.begin();
+		
 
 		for (Pet x : parser.parse(getStream("init/Pets.json"), Pet[].class)) {
-			x = em.merge(x);
+			petRepository.save(x);
 			w.println(format("Created pet:  id={0}, name={1}", x.getId(), x.getName()));
 		}
 		for (Order x : parser.parse(getStream("init/Orders.json"), Order[].class)) {
-			x = em.merge(x);
+			orderRepository.save(x);
 			w.println(format("Created order:  id={0}", x.getId()));
 		}
 		for (User x: parser.parse(getStream("init/Users.json"), User[].class)) {
-			x = em.merge(x);
+			userRepository.save(x);
 			w.println(format("Created user:  username={0}", x.getUsername()));
 		}
-
-		et.commit();
 
 		return this;
 	}
@@ -104,7 +111,7 @@ public class PetStoreService extends AbstractPersistenceService {
 	 * @throws IdNotFound If pet was not found.
 	 */
 	public Pet getPet(long id) throws IdNotFound {
-		return find(Pet.class, id);
+		return petRepository.findById(id).get();
 	}
 
 	/**
@@ -115,7 +122,7 @@ public class PetStoreService extends AbstractPersistenceService {
 	 * @throws IdNotFound If order was not found.
 	 */
 	public Order getOrder(long id) throws IdNotFound {
-		return find(Order.class, id);
+		return orderRepository.findById(id).get();
 	}
 
 	/**
@@ -128,7 +135,7 @@ public class PetStoreService extends AbstractPersistenceService {
 	 */
 	public User getUser(String username) throws InvalidUsername, IdNotFound  {
 		assertValidUsername(username);
-		return find(User.class, username);
+		return userRepository.findByUsername(username);
 	}
 
 	/**
@@ -137,7 +144,7 @@ public class PetStoreService extends AbstractPersistenceService {
 	 * @return All pets in the database.
 	 */
 	public List<Pet> getPets() {
-		return query("select X from PetstorePet X", Pet.class, (SearchArgs)null, (PageArgs)null);
+		return petRepository.findAll();
 	}
 
 	/**
@@ -146,7 +153,7 @@ public class PetStoreService extends AbstractPersistenceService {
 	 * @return All orders in the database.
 	 */
 	public List<Order> getOrders() {
-		return query("select X from PetstoreOrder X", Order.class, (SearchArgs)null, (PageArgs)null);
+		return orderRepository.findAll();
 	}
 
 	/**
@@ -155,7 +162,7 @@ public class PetStoreService extends AbstractPersistenceService {
 	 * @return All users in the database.
 	 */
 	public List<User> getUsers() {
-		return query("select X from PetstoreUser X", User.class, (SearchArgs)null, (PageArgs)null);
+		return userRepository.findAll();
 	}
 
 	/**
@@ -164,8 +171,8 @@ public class PetStoreService extends AbstractPersistenceService {
 	 * @param c The pet input data.
 	 * @return a new {@link Pet} object.
 	 */
-	public Pet create(CreatePet c) {
-		return merge(new Pet().status(PetStatus.AVAILABLE).apply(c));
+	public Pet create(CreatePet c) {	
+		return petRepository.save((new Pet().status(PetStatus.AVAILABLE).apply(c)));
 	}
 
 	/**
@@ -175,7 +182,7 @@ public class PetStoreService extends AbstractPersistenceService {
 	 * @return a new {@link Order} object.
 	 */
 	public Order create(CreateOrder c) {
-		return merge(new Order().status(OrderStatus.PLACED).apply(c));
+		return orderRepository.save((new Order().status(OrderStatus.PLACED).apply(c)));
 	}
 
 	/**
@@ -185,7 +192,7 @@ public class PetStoreService extends AbstractPersistenceService {
 	 * @return a new {@link User} object.
 	 */
 	public User create(User c) {
-		return merge(new User().apply(c));
+		return userRepository.save((new User().apply(c)));
 	}
 
 	/**
@@ -196,8 +203,8 @@ public class PetStoreService extends AbstractPersistenceService {
 	 * @throws IdNotFound Pet was not found.
 	 */
 	public Pet update(UpdatePet u) throws IdNotFound {
-		EntityManager em = getEntityManager();
-		return merge(em, find(em, Pet.class, u.getId()).apply(u));
+		Pet pet =  petRepository.findById(u.getId()).get();		
+		return petRepository.save(pet.apply(u));
 	}
 
 	/**
@@ -208,8 +215,8 @@ public class PetStoreService extends AbstractPersistenceService {
 	 * @throws IdNotFound Order was not found.
 	 */
 	public Order update(Order o) throws IdNotFound {
-		EntityManager em = getEntityManager();
-		return merge(em, find(em, Order.class, o.getId()).apply(o));
+		Order order =  orderRepository.findById(o.getId()).get();		
+		return orderRepository.save(order.apply(o));
 	}
 
 	/**
@@ -221,9 +228,8 @@ public class PetStoreService extends AbstractPersistenceService {
 	 * @throws InvalidUsername The username was not valid.
 	 */
 	public User update(User u) throws IdNotFound, InvalidUsername {
-		assertValidUsername(u.getUsername());
-		EntityManager em = getEntityManager();
-		return merge(em, find(em, User.class, u.getUsername()).apply(u));
+		User user =  userRepository.findByUsername(u.getUsername());		
+		return userRepository.save(user.apply(u));
 	}
 
 	/**
@@ -233,8 +239,7 @@ public class PetStoreService extends AbstractPersistenceService {
 	 * @throws IdNotFound Pet was not found.
 	 */
 	public void removePet(long id) throws IdNotFound {
-		EntityManager em = getEntityManager();
-		remove(em, find(em, Pet.class, id));
+		petRepository.deleteById(id);
 	}
 
 	/**
@@ -244,8 +249,7 @@ public class PetStoreService extends AbstractPersistenceService {
 	 * @throws IdNotFound Order was not found.
 	 */
 	public void removeOrder(long id) throws IdNotFound {
-		EntityManager em = getEntityManager();
-		remove(em, find(em, Order.class, id));
+		orderRepository.deleteById(id);
 	}
 
 	/**
@@ -255,8 +259,7 @@ public class PetStoreService extends AbstractPersistenceService {
 	 * @throws IdNotFound User was not found.
 	 */
 	public void removeUser(String username) throws IdNotFound {
-		EntityManager em = getEntityManager();
-		remove(em, find(em, User.class, username));
+		userRepository.deleteByUsername(username);
 	}
 
 	/**
@@ -266,10 +269,7 @@ public class PetStoreService extends AbstractPersistenceService {
 	 * @return Pets with the specified statuses.
 	 */
 	public Collection<Pet> getPetsByStatus(PetStatus[] status) {
-		return getEntityManager()
-			.createQuery("select X from PetstorePet X where X.status in :status", Pet.class)
-			.setParameter("status", status)
-			.getResultList();
+		return petRepository.findByStatus(status);
 	}
 
 	/**
@@ -280,10 +280,7 @@ public class PetStoreService extends AbstractPersistenceService {
 	 * @throws InvalidTag Tag name was invalid.
 	 */
 	public Collection<Pet> getPetsByTags(String[] tags) throws InvalidTag {
-		return getEntityManager()
-			.createQuery("select X from PetstorePet X where X.tags in :tags", Pet.class)
-			.setParameter("tags", tags)
-			.getResultList();
+		return petRepository.findByTags(tags);
 	}
 
 	/**

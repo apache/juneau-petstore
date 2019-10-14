@@ -53,8 +53,8 @@ public class Pet {
 	@Schema(description="Pet species.")
 	private Species species;
 
-	@ElementCollection @OrderColumn
-	@Schema(description="Pet attributes.", example="friendly,smart")
+	@ElementCollection(fetch=FetchType.EAGER) @OrderColumn
+	@Schema(description="Pet attributes.", example="friendly,smart")	
 	private List<String> tags;
 
 	@Column @Enumerated(STRING)
