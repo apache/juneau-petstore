@@ -95,11 +95,7 @@
 		    <artifactId>xml-apis</artifactId>
 		    <version>${xml.apis.version}</version>
 		</dependency>
-        <dependency>
-		 <groupId>org.springframework.boot</groupId>
-		 <artifactId>spring-boot-starter-data-jpa</artifactId>
-		  <version>${springframework.version}</version>
-	    </dependency>
+        
     </dependencies>
 
     <build>
