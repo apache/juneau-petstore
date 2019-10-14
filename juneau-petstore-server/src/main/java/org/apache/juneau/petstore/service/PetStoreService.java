@@ -24,8 +24,6 @@ import org.apache.juneau.petstore.dto.*;
 import org.apache.juneau.petstore.repository.OrderRepository;
 import org.apache.juneau.petstore.repository.PetRepository;
 import org.apache.juneau.petstore.repository.UserRepository;
-//import org.apache.juneau.pojotools.*;
-//import org.apache.juneau.pojotools.SearchArgs;
 import org.springframework.beans.factory.annotation.Autowired;
 
 
