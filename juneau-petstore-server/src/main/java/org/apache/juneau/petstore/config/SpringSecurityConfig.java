@@ -23,10 +23,12 @@ public class SpringSecurityConfig extends WebSecurityConfigurerAdapter{
     protected void configure(HttpSecurity http) throws Exception {
 
         http
+                .httpBasic()
+                .and()
                 .authorizeRequests()
-                .antMatchers(HttpMethod.POST, "/pet").hasRole("ADMIN")
-                .antMatchers(HttpMethod.PUT, "/pet/**").hasRole("ADMIN")
-                .antMatchers(HttpMethod.DELETE, "/pet/**").hasRole("ADMIN")
+                .antMatchers(HttpMethod.POST, "/petstore/pet").hasRole("ADMIN")
+                .antMatchers(HttpMethod.PUT, "/petstore/pet/**").hasRole("ADMIN")
+                .antMatchers(HttpMethod.DELETE, "/petstore/pet/**").hasRole("ADMIN")
                 .and()
                 .csrf().disable()
                 .formLogin().disable();
