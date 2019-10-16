@@ -15,6 +15,7 @@ package org.apache.juneau.petstore;
 import org.apache.juneau.rest.springboot.JuneauRestInitializer;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.builder.SpringApplicationBuilder;
+import org.springframework.cache.annotation.EnableCaching;
 import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 
 /**
@@ -22,6 +23,7 @@ import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
  */
 @SpringBootApplication
 @EnableJpaRepositories(basePackages = "org.apache.juneau.petstore")
+@EnableCaching
 @SuppressWarnings("javadoc")
 public class App {
 
