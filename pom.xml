@@ -38,7 +38,7 @@
         <junit.version>4.11</junit.version>
         <servlet.version>3.1.0</servlet.version>
         <httpclient.version>4.5.6</httpclient.version>
-        <juneau.version>8.1.2-SNAPSHOT</juneau.version>
+        <juneau.version>8.1.1</juneau.version>
         <derby.version>10.10.2.0</derby.version>
         <hibernate.version>5.0.9.Final</hibernate.version>
         <javax.inject.version>1</javax.inject.version>
