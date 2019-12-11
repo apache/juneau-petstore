@@ -40,7 +40,7 @@ public class Main {
 		try (RestClient rc = RestClient.create(SimpleJsonSerializer.class, JsonParser.class).build()) {
 
 			// Instantiate our proxy.
-			PetStore petStore = rc.getRemoteResource(PetStore.class, "http://localhost:5000");
+			PetStore petStore = rc.getRemote(PetStore.class, "http://localhost:5000");
 
 			// Print out the pets in the store.
 			Collection<Pet> pets = petStore.getPets();

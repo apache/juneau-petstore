@@ -37,7 +37,7 @@ import org.apache.juneau.http.response.*;
  * 	<li class='extlink'>{@source}
  * </ul>
  */
-@RemoteResource(path="/petstore")
+@Remote(path="/petstore")
 public interface PetStore {
 
 	//------------------------------------------------------------------------------------------------------------------

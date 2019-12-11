@@ -45,7 +45,7 @@ import org.apache.juneau.rest.converters.*;
  * 	<li class='extlink'>{@source}
  * </ul>
  */
-@RestResource(
+@Rest(
 	path="/petstore",
 	title="Petstore application",
 	description={

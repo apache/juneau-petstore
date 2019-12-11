@@ -33,7 +33,7 @@ public class CreateOrder {
 	 * @param petId The <bc>petId</bc> property value.
 	 * @param username The <bc>username</bc> property value.
 	 */
-	@BeanConstructor(properties="petId,username")
+	@Beanc(properties="petId,username")
 	public CreateOrder(long petId, String username) {
 		this.petId = petId;
 		this.username = username;
