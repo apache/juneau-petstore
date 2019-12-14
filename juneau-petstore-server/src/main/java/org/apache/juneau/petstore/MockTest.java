@@ -90,8 +90,8 @@ public class MockTest {
     				.assertBody(pet.toString());
     			}
 
-    	// Posting pet (doesn`t work)
-/*
+    	// Posting pet 
+
     	@Rest(serializers = JsonSerializer.class, parsers = JsonParser.class)
     	public static class PostPetMockRest {
 
@@ -100,7 +100,7 @@ public class MockTest {
     		public Ok echo(@Body CreatePet pet) throws IdConflict, NotAcceptable, UnsupportedMediaType {
     			return OK;
     		}
-
+    	}
     		@Test
     		public void testPostPet() throws Exception {
     			CreatePet pet = new CreatePet("Sunshine", 100, Species.BIRD, null);
@@ -113,7 +113,7 @@ public class MockTest {
     			.assertBody(pet.toString());
     		}
 	
-	*/
+	
 		
 		// Delete pet by Id
 
@@ -260,8 +260,7 @@ public class MockTest {
 
 			)
 			public Ok getOrder(@Body long orderId) throws InvalidId, IdNotFound, NotAcceptable {
-				if (orderId < 1 || orderId > 1000)
-					throw new InvalidId();
+				
 				return OK;
 			}
 
@@ -314,9 +313,7 @@ public class MockTest {
 
 			)
 			public Ok deleteOrder(@Body long orderId) throws InvalidId, IdNotFound, NotAcceptable {
-				if (orderId < 0)
-					throw new InvalidId();
-
+				
 				return OK;
 			}
 
@@ -396,7 +393,7 @@ public class MockTest {
 			@RestMethod(name = POST, path = "/user", summary = "Create user"
 
 			)
-			public Ok createUser(User user) throws InvalidUsername, IdConflict, NotAcceptable, UnsupportedMediaType {
+			public Ok createUser(@Body User user) throws InvalidUsername, IdConflict, NotAcceptable, UnsupportedMediaType {
 
 				return OK;
 			}
