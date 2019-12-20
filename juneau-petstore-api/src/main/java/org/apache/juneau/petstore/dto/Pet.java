@@ -54,7 +54,7 @@ public class Pet {
 	private Species species;
 
 	@ElementCollection(fetch=FetchType.EAGER) @OrderColumn
-	@Schema(description="Pet attributes.", example="friendly,smart")	
+	@Schema(description="Pet attributes.", example="friendly,smart")
 	private List<String> tags;
 
 	@Column @Enumerated(STRING)
@@ -86,7 +86,7 @@ public class Pet {
 		this.name = x.getName();
 		this.price = x.getPrice();
 		this.species = x.getSpecies();
-		this.tags = Arrays.asList(x.getTags());
+		this.tags = x.getTags() == null ? null : Arrays.asList(x.getTags());
 		this.status = x.getStatus();
 		return this;
 	}
