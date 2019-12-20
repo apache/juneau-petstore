@@ -245,21 +245,6 @@ public class PetStoreResource extends BasicRest implements PetStore {
 
 	@Override /* PetStore */
 	@RestMethod(
-		name=GET,
-		path="/pet/findByTags",
-		summary="Finds Pets by tags",
-		description="Multiple tags can be provided with comma separated strings. Use tag1, tag2, tag3 for testing.",
-		swagger=@MethodSwagger(
-			tags="pet"
-		)
-	)
-	@Deprecated
-	public Collection<Pet> findPetsByTags(String[] tags) throws InvalidTag, NotAcceptable {
-		return store.getPetsByTags(tags);
-	}
-
-	@Override /* PetStore */
-	@RestMethod(
 		name=DELETE,
 		path="/pet/{petId}",
 		summary="Deletes a pet",
@@ -268,21 +253,21 @@ public class PetStoreResource extends BasicRest implements PetStore {
 		)
 	)
 	public Ok deletePet(String apiKey, long petId) throws IdNotFound, NotAcceptable {
-		store.removePet(petId);
+		store.deletePet(petId);
 		return OK;
 	}
-	
+
+	@Override /* PetStore */
 	@RestMethod(
-			name=DELETE,
-			path="/pets",
-			summary="Delete all pets",
-			description="This can be done only by the logged in user."
-						
-				)
-		public Ok deleteAllPets() {
-			store.deleteAllPets();
-			return OK;
-		}
+		name=DELETE,
+		path="/pets",
+		summary="Delete all pets",
+		description="This can be done only by the logged in user."
+	)
+	public Ok deleteAllPets() {
+		store.deleteAllPets();
+		return OK;
+	}
 
 	//-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 	// Orders
@@ -306,7 +291,7 @@ public class PetStoreResource extends BasicRest implements PetStore {
 		;
 	}
 
-	@Override
+	@Override /* PetStore */
 	@RestMethod(
 		name=GET,
 		path="/store/order",
@@ -329,7 +314,7 @@ public class PetStoreResource extends BasicRest implements PetStore {
 		return store.getOrders();
 	}
 
-	@Override
+	@Override /* PetStore */
 	@RestMethod(
 		name=GET,
 		path="/store/order/{orderId}",
@@ -345,7 +330,7 @@ public class PetStoreResource extends BasicRest implements PetStore {
 		return store.getOrder(orderId);
 	}
 
-	@Override
+	@Override /* PetStore */
 	@RestMethod(
 		name=POST,
 		path="/store/order",
@@ -362,7 +347,7 @@ public class PetStoreResource extends BasicRest implements PetStore {
 		return store.create(co).getId();
 	}
 
-	@Override
+	@Override /* PetStore */
 	@RestMethod(
 		name=DELETE,
 		path="/store/order/{orderId}",
@@ -378,23 +363,23 @@ public class PetStoreResource extends BasicRest implements PetStore {
 	public Ok deleteOrder(long orderId) throws InvalidId, IdNotFound, NotAcceptable {
 		if (orderId < 0)
 			throw new InvalidId();
-		store.removeOrder(orderId);
+		store.deleteOrder(orderId);
 		return OK;
 	}
-	
-	@RestMethod(
-			name=DELETE,
-			path="/orders",
-			summary="Delete all orders",
-			description="This can be done only by the logged in user."
-						
-				)
-		public Ok deleteAllOrders() {
-			store.deleteAllOrders();
-			return OK;
-		}
 
-	@Override
+	@Override /* PetStore */
+	@RestMethod(
+		name=DELETE,
+		path="/orders",
+		summary="Delete all orders",
+		description="This can be done only by the logged in user."
+	)
+	public Ok deleteAllOrders() {
+		store.deleteAllOrders();
+		return OK;
+	}
+
+	@Override /* PetStore */
 	@RestMethod(
 		name=GET,
 		path="/store/inventory",
@@ -415,7 +400,7 @@ public class PetStoreResource extends BasicRest implements PetStore {
 	// Users
 	//-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
-	@Override
+	@Override /* PetStore */
 	@RestMethod(
 		name=GET,
 		path="/user",
@@ -429,7 +414,7 @@ public class PetStoreResource extends BasicRest implements PetStore {
 		return store.getUsers();
 	}
 
-	@Override
+	@Override /* PetStore */
 	@RestMethod(
 		name=GET,
 		path="/user/{username}",
@@ -442,7 +427,7 @@ public class PetStoreResource extends BasicRest implements PetStore {
 		return store.getUser(username);
 	}
 
-	@Override
+	@Override /* PetStore */
 	@RestMethod(
 		name=POST,
 		path="/user",
@@ -457,7 +442,7 @@ public class PetStoreResource extends BasicRest implements PetStore {
 		return OK;
 	}
 
-	@Override
+	@Override /* PetStore */
 	@RestMethod(
 		name=POST,
 		path="/user/createWithArray",
@@ -472,7 +457,7 @@ public class PetStoreResource extends BasicRest implements PetStore {
 		return OK;
 	}
 
-	@Override
+	@Override /* PetStore */
 	@RestMethod(
 		name=PUT,
 		path="/user/{username}",
@@ -487,7 +472,7 @@ public class PetStoreResource extends BasicRest implements PetStore {
 		return OK;
 	}
 
-	@Override
+	@Override /* PetStore */
 	@RestMethod(
 		name=DELETE,
 		path="/user/{username}",
@@ -498,22 +483,23 @@ public class PetStoreResource extends BasicRest implements PetStore {
 		)
 	)
 	public Ok deleteUser(String username) throws InvalidUsername, IdNotFound, NotAcceptable {
-		store.removeUser(username);
+		store.deleteUser(username);
 		return OK;
 	}
-	@RestMethod(
-			name=DELETE,
-			path="/users",
-			summary="Delete all users",
-			description="This can be done only by the admin."
-						
-				)
-		public Ok deleteAllUsers() {
-			store.deleteAllUsers();
-			return OK;
-		}
 
-	@Override
+	@Override /* PetStore */
+	@RestMethod(
+		name=DELETE,
+		path="/users",
+		summary="Delete all users",
+		description="This can be done only by the admin."
+	)
+	public Ok deleteAllUsers() {
+		store.deleteAllUsers();
+		return OK;
+	}
+
+	@Override /* PetStore */
 	@RestMethod(
 		name=GET,
 		path="/user/login",
@@ -522,8 +508,6 @@ public class PetStoreResource extends BasicRest implements PetStore {
 			tags="user"
 		)
 	)
-	
-	
 	public Ok login(
 			String username,
 			String password,
@@ -543,7 +527,7 @@ public class PetStoreResource extends BasicRest implements PetStore {
 		return OK;
 	}
 
-	@Override
+	@Override /* PetStore */
 	@RestMethod(
 		name=GET,
 		path="/user/logout",

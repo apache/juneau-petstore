@@ -12,11 +12,10 @@ import org.springframework.stereotype.Repository;
  * TODO - Needs documentation
  */
 @Repository
+@SuppressWarnings("javadoc")
 public interface UserRepository  extends JpaRepository <User, Long>{
 
-	@SuppressWarnings("javadoc")
 	Optional<User> findByUsername(String username);
 
-	@SuppressWarnings("javadoc")
 	Long deleteByUsername(String username);
 }

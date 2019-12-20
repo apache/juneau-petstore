@@ -17,7 +17,6 @@ import static java.text.MessageFormat.*;
 import java.io.*;
 import java.util.*;
 
-
 import org.apache.juneau.json.*;
 import org.apache.juneau.parser.*;
 import org.apache.juneau.petstore.dto.*;
@@ -26,10 +25,6 @@ import org.apache.juneau.petstore.repository.PetRepository;
 import org.apache.juneau.petstore.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Transactional;
-
-
-
-
 
 /**
  * Pet store database application.
@@ -43,7 +38,6 @@ import org.springframework.transaction.annotation.Transactional;
  */
 public class PetStoreService {
 
-
 	@Autowired
 	private PetRepository petRepository;
 
@@ -52,6 +46,7 @@ public class PetStoreService {
 
 	@Autowired
 	private OrderRepository orderRepository;
+
 	//-----------------------------------------------------------------------------------------------------------------
 	// Initialization methods.
 	//-----------------------------------------------------------------------------------------------------------------
@@ -65,7 +60,6 @@ public class PetStoreService {
 	 * @throws IOException File could not be read from file system.
 	 */
 	public PetStoreService initDirect(PrintWriter w) throws ParseException, IOException {
-
 
 		JsonParser parser = JsonParser.create().build();
 
@@ -204,7 +198,7 @@ public class PetStoreService {
 	 * @return The updated {@link Pet} object.
 	 * @throws IdNotFound Pet was not found.
 	 */
-    @Transactional(rollbackFor=Exception.class)
+	@Transactional(rollbackFor=Exception.class)
 	public Pet update(UpdatePet u) throws IdNotFound {
 		Pet pet =  petRepository.findById(u.getId()).orElseThrow(() -> new IdNotFound(u.getId(), Pet.class));
 		return petRepository.save(pet.apply(u));
@@ -217,7 +211,7 @@ public class PetStoreService {
 	 * @return The updated {@link Order} object.
 	 * @throws IdNotFound Order was not found.
 	 */
-    @Transactional(rollbackFor=Exception.class)
+	@Transactional(rollbackFor=Exception.class)
 	public Order update(Order o) throws IdNotFound {
 		Order order =  orderRepository.findById(o.getId()).orElseThrow(() -> new IdNotFound(o.getId(), Order.class));
 		return orderRepository.save(order.apply(o));
@@ -231,7 +225,7 @@ public class PetStoreService {
 	 * @throws IdNotFound User was not found.
 	 * @throws InvalidUsername The username was not valid.
 	 */
-    @Transactional(rollbackFor=Exception.class)
+	@Transactional(rollbackFor=Exception.class)
 	public User update(User u) throws IdNotFound, InvalidUsername {
 		User user =  userRepository.findByUsername(u.getUsername()).orElseThrow(() -> new IdNotFound(u.getUsername(), Order.class));
 		return userRepository.save(user.apply(u));
@@ -243,9 +237,17 @@ public class PetStoreService {
 	 * @param id The pet ID.
 	 * @throws IdNotFound Pet was not found.
 	 */
-    @Transactional(rollbackFor=Exception.class)
-	public void removePet(long id) throws IdNotFound {
+	@Transactional(rollbackFor=Exception.class)
+	public void deletePet(long id) throws IdNotFound {
 		petRepository.deleteById(id);
+	}
+
+	/**
+	 * Removes all pets from the database.
+	 */
+	@Transactional(rollbackFor=Exception.class)
+	public void deleteAllPets() {
+		petRepository.deleteAll();
 	}
 
 	/**
@@ -254,9 +256,17 @@ public class PetStoreService {
 	 * @param id The order ID.
 	 * @throws IdNotFound Order was not found.
 	 */
-    @Transactional(rollbackFor=Exception.class)
-	public void removeOrder(long id) throws IdNotFound {
+	@Transactional(rollbackFor=Exception.class)
+	public void deleteOrder(long id) throws IdNotFound {
 		orderRepository.deleteById(id);
+	}
+
+	/**
+	 * Removes all orders from the database.
+	 */
+	@Transactional(rollbackFor=Exception.class)
+	public void deleteAllOrders() {
+		orderRepository.deleteAll();
 	}
 
 	/**
@@ -265,9 +275,17 @@ public class PetStoreService {
 	 * @param username The username.
 	 * @throws IdNotFound User was not found.
 	 */
-    @Transactional(rollbackFor=Exception.class)
-	public void removeUser(String username) throws IdNotFound {
+	@Transactional(rollbackFor=Exception.class)
+	public void deleteUser(String username) throws IdNotFound {
 		userRepository.deleteByUsername(username);
+	}
+
+	/**
+	 * Removes all users from the database.
+	 */
+	@Transactional(rollbackFor=Exception.class)
+	public void deleteAllUsers() {
+		userRepository.deleteAll();
 	}
 
 	/**
@@ -278,17 +296,6 @@ public class PetStoreService {
 	 */
 	public Collection<Pet> getPetsByStatus(PetStatus[] status) {
 		return petRepository.findByStatus(status);
-	}
-
-	/**
-	 * Returns all pets with the specified tags.
-	 *
-	 * @param tags Pet tags.
-	 * @return Pets with the specified tags.
-	 * @throws InvalidTag Tag name was invalid.
-	 */
-	public Collection<Pet> getPetsByTags(String[] tags) throws InvalidTag {
-		return petRepository.findByTags(tags);
 	}
 
 	/**
@@ -330,23 +337,5 @@ public class PetStoreService {
 
 	private InputStream getStream(String fileName) {
 		return getClass().getResourceAsStream(fileName);
-	}
-
-
-	public void deleteAllPets() {
-		petRepository.deleteAll();
-		
-	}
-
-
-	public void deleteAllUsers() {
-		userRepository.deleteAll();
-		
-	}
-
-
-	public void deleteAllOrders() {
-		orderRepository.deleteAll();
-		
 	}
 }

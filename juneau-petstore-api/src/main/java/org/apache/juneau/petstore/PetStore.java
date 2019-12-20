@@ -129,26 +129,6 @@ public interface PetStore {
 	) throws NotAcceptable;
 
 	/**
-	 * Find all pets with the specified tags.
-	 *
-	 * @param tags The tags to match against.
-	 * @return The pets that match the specified tags.
-	 * @throws InvalidTag Invalid tag was specified.
-	 * @throws NotAcceptable Unsupported <c>Accept</c> header specified.
-	 */
-	@RemoteMethod(method=GET, path="/pet/findByTags")
-	@Deprecated
-	public Collection<Pet> findPetsByTags(
-		@Query(
-			name="tags",
-			description="Tags to filter by",
-			required=true,
-			example="['tag1','tag2']"
-		)
-		String[] tags
-	) throws InvalidTag, NotAcceptable;
-
-	/**
 	 * Deletes the specified pet.
 	 *
 	 * @param apiKey Security key.
@@ -173,6 +153,14 @@ public interface PetStore {
 		)
 		long petId
 	) throws IdNotFound, NotAcceptable;
+
+	/**
+	 * Deletes all pets in the database.
+	 *
+	 * @return {@link Ok} if successful.
+	 */
+	@RemoteMethod(method=DELETE, path="/pet")
+	public Ok deleteAllPets();
 
 	//------------------------------------------------------------------------------------------------------------------
 	// Orders
@@ -251,6 +239,14 @@ public interface PetStore {
 		)
 		long orderId
 	) throws InvalidId, IdNotFound, NotAcceptable;
+
+	/**
+	 * Deletes all orders in the database.
+	 *
+	 * @return {@link Ok} if successful.
+	 */
+	@RemoteMethod(method=DELETE, path="/store/order")
+	public Ok deleteAllOrders();
 
 	/**
 	 * Returns an inventory of pet statuses and counts.
@@ -369,6 +365,14 @@ public interface PetStore {
 		)
 		String username
 	) throws InvalidUsername, IdNotFound, NotAcceptable;
+
+	/**
+	 * Deletes all users in the database.
+	 *
+	 * @return {@link Ok} if successful.
+	 */
+	@RemoteMethod(method=DELETE, path="/user")
+	public Ok deleteAllUsers();
 
 	/**
 	 * User login.

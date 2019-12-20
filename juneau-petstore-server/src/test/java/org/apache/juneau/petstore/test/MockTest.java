@@ -3,7 +3,6 @@ package org.apache.juneau.petstore.test;
 import java.io.IOException;
 import javax.servlet.ServletException;
 import org.apache.juneau.petstore.App;
-import org.apache.juneau.petstore.dto.PetStatus;
 import org.apache.juneau.petstore.repository.UserRepository;
 import org.apache.juneau.petstore.rest.PetStoreResource;
 import org.apache.juneau.rest.mock2.MockRest;
@@ -15,6 +14,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringRunner;
 
+@SuppressWarnings("javadoc")
 @RunWith(SpringRunner.class)
 @ContextConfiguration(classes = { App.class })
 @SpringBootTest
@@ -121,35 +121,15 @@ public class MockTest {
 	public void testfindPetByStatus() throws Exception {
 
 		String petId = createTestPet();
-		PetStatus[] status = { PetStatus.AVAILABLE };
 
 		petStoreRest
-		.request("GET", "/pet/findByStatus", status)
-		.execute()
-		.assertStatus(200)
-		.assertBody(
-				"[{id:" + petId + ",species:'BIRD',name:'Sunshine',tags:[],price:100.0,status:'AVAILABLE'}]");
-
-		deleteTestPets();
-	}
-
-	// Find pet by tags
-
-	@Test
-	public void testFindPetByTags() throws Exception {
-
-		String petId = createTestPet();
-		String[] tags = { "nice" };
-
-		petStoreRest
-		.request("GET", "/pet/findByTags", tags)
+		.get("/pet/findByStatus?status=AVAILABLE")
 		.execute()
 		.assertStatus(200)
 		.assertBody(
 				"[{id:" + petId + ",species:'BIRD',name:'Sunshine',tags:['nice'],price:100.0,status:'AVAILABLE'}]");
 
 		deleteTestPets();
-
 	}
 
 	// Updating pet
