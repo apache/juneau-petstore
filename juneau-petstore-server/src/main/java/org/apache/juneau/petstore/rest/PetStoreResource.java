@@ -96,6 +96,7 @@ import org.apache.juneau.rest.converters.*;
 			)
 		}
 	),
+	debug="true",
 	staticFiles={"htdocs:/htdocs"}  // Expose static files in htdocs subpackage.
 )
 @HtmlDocConfig(
