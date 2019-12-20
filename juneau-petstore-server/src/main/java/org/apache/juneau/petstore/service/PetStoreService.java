@@ -331,4 +331,22 @@ public class PetStoreService {
 	private InputStream getStream(String fileName) {
 		return getClass().getResourceAsStream(fileName);
 	}
+
+
+	public void deleteAllPets() {
+		petRepository.deleteAll();
+		
+	}
+
+
+	public void deleteAllUsers() {
+		userRepository.deleteAll();
+		
+	}
+
+
+	public void deleteAllOrders() {
+		orderRepository.deleteAll();
+		
+	}
 }
