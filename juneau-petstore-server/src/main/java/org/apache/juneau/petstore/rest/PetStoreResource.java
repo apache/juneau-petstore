@@ -271,6 +271,18 @@ public class PetStoreResource extends BasicRest implements PetStore {
 		store.removePet(petId);
 		return OK;
 	}
+	
+	@RestMethod(
+			name=DELETE,
+			path="/pets",
+			summary="Delete all pets",
+			description="This can be done only by the logged in user."
+						
+				)
+		public Ok deleteAllPets() {
+			store.deleteAllPets();
+			return OK;
+		}
 
 	//-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 	// Orders
@@ -369,6 +381,18 @@ public class PetStoreResource extends BasicRest implements PetStore {
 		store.removeOrder(orderId);
 		return OK;
 	}
+	
+	@RestMethod(
+			name=DELETE,
+			path="/orders",
+			summary="Delete all orders",
+			description="This can be done only by the logged in user."
+						
+				)
+		public Ok deleteAllOrders() {
+			store.deleteAllOrders();
+			return OK;
+		}
 
 	@Override
 	@RestMethod(
@@ -477,6 +501,17 @@ public class PetStoreResource extends BasicRest implements PetStore {
 		store.removeUser(username);
 		return OK;
 	}
+	@RestMethod(
+			name=DELETE,
+			path="/users",
+			summary="Delete all users",
+			description="This can be done only by the admin."
+						
+				)
+		public Ok deleteAllUsers() {
+			store.deleteAllUsers();
+			return OK;
+		}
 
 	@Override
 	@RestMethod(
@@ -487,6 +522,8 @@ public class PetStoreResource extends BasicRest implements PetStore {
 			tags="user"
 		)
 	)
+	
+	
 	public Ok login(
 			String username,
 			String password,
