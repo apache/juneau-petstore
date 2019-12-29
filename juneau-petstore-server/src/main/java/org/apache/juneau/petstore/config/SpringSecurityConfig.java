@@ -29,7 +29,7 @@ public class SpringSecurityConfig extends WebSecurityConfigurerAdapter{
                 .httpBasic()
                 .and()
                 .authorizeRequests()
-                .antMatchers(HttpMethod.POST, "/petstore/pet").hasRole("ADMIN")
+               // .antMatchers(HttpMethod.POST, "/petstore/pet").hasRole("ADMIN")
                 .antMatchers(HttpMethod.PUT, "/petstore/pet/**").hasRole("ADMIN")
                 .antMatchers(HttpMethod.DELETE, "/petstore/pet/**").hasRole("ADMIN")
                 .and()
