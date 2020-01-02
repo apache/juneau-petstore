@@ -31,7 +31,8 @@ import org.apache.juneau.serializer.annotation.*;
 	description="Example of a router resource page.",
 	children={
 		PetStoreResource.class
-	}
+	},
+	debug="true"
 )
 @HtmlDocConfig(
 	widgets={

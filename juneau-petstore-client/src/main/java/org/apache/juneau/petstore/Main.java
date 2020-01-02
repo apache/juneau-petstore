@@ -17,6 +17,11 @@ import static java.text.MessageFormat.*;
 import java.io.*;
 import java.util.*;
 
+import org.apache.http.auth.AuthScope;
+import org.apache.http.auth.Credentials;
+import org.apache.http.auth.UsernamePasswordCredentials;
+import org.apache.http.client.CredentialsProvider;
+import org.apache.http.impl.client.BasicCredentialsProvider;
 import org.apache.juneau.json.*;
 import org.apache.juneau.marshall.*;
 import org.apache.juneau.parser.*;
@@ -34,10 +39,20 @@ public class Main {
 
 	private static final JsonParser JSON_PARSER = JsonParser.create().ignoreUnknownBeanProperties().build();
 
+	@SuppressWarnings("deprecation")
 	public static void main(String[] args) {
 
+		// TODO - This is broken until we can update to Juneau 8.1.3 which has a fix for handling how Spring Security
+		// processes Basic Auth requests.
+
+		// Set up BASIC auth.
+		// User/passwords are hardcoded in SpringSecurityConfig.
+		Credentials up = new UsernamePasswordCredentials("admin", "password");
+		CredentialsProvider p = new BasicCredentialsProvider();
+		p.setCredentials(AuthScope.ANY, up);
+
 		// Create a RestClient with JSON serialization support.
-		try (RestClient rc = RestClient.create(SimpleJsonSerializer.class, JsonParser.class).build()) {
+		try (RestClient rc = RestClient.create(SimpleJsonSerializer.class, JsonParser.class).defaultCredentialsProvider(p).build()) {
 
 			// Instantiate our proxy.
 			PetStore petStore = rc.getRemote(PetStore.class, "http://localhost:5000");
