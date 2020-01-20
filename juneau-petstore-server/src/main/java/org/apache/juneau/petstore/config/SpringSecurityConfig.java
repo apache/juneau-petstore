@@ -27,9 +27,11 @@ public class SpringSecurityConfig extends WebSecurityConfigurerAdapter {
 			.httpBasic()
 			.and()
 			.authorizeRequests()
-			.anyRequest().authenticated()
-			.antMatchers(GET).anonymous() // Allow anonymous read-only access.
-			.antMatchers(POST).anonymous() // TEMPORARY.
+			.antMatchers(GET).permitAll()
+			.antMatchers(POST).permitAll() 
+			//.anyRequest().authenticated()
+			//.antMatchers(GET).anonymous() // Allow anonymous read-only access.
+			//.antMatchers(POST).anonymous() // TEMPORARY.
 			.and()
 			.csrf().disable()
 			.formLogin().disable();

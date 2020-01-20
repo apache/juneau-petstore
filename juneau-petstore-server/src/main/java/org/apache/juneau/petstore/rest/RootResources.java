@@ -56,12 +56,12 @@ import org.apache.juneau.serializer.annotation.*;
 		"</div>"
 	}
 )
-@SerializerConfig(
+/*@SerializerConfig(
 	// For testing purposes, we want to use single quotes in all the serializers so it's easier to do simple
 	// String comparisons.
 	// You can apply any of the Serializer/Parser/BeanContext settings this way.
 	quoteChar="'"
-)
+) */
 public class RootResources extends BasicRestServletGroup {
 	private static final long serialVersionUID = 1L;
 }
