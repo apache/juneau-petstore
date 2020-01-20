@@ -12,11 +12,15 @@
 // ***************************************************************************************************************************
 package org.apache.juneau.petstore;
 
+import java.util.Arrays;
+
 import org.apache.juneau.petstore.rest.*;
 import org.apache.juneau.petstore.service.*;
 import org.apache.juneau.rest.springboot.annotation.JuneauRestRoot;
 import org.springframework.boot.web.servlet.*;
 import org.springframework.context.annotation.*;
+import org.springframework.web.cors.CorsConfiguration;
+import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 import org.springframework.web.filter.*;
 
 @SuppressWarnings("javadoc")
@@ -60,4 +64,15 @@ public class AppConfiguration {
 	    registration.setEnabled(false);
 	    return registration;
 	}
+	@Bean
+	  public CorsFilter corsFilter() {
+	      UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
+	      CorsConfiguration config = new CorsConfiguration();
+	      config.setAllowCredentials(true);
+	      config.addAllowedOrigin("*");
+	      config.setAllowedMethods(Arrays.asList("POST", "OPTIONS", "GET", "DELETE", "PUT"));
+	      config.setAllowedHeaders(Arrays.asList("X-Requested-With", "Origin", "Content-Type", "Accept", "Authorization"));
+	      source.registerCorsConfiguration("/**", config);
+	      return new CorsFilter(source);
+	  }
 }

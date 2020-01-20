@@ -36,6 +36,7 @@ import org.apache.juneau.rest.helper.*;
 import org.apache.juneau.http.response.*;
 import org.apache.juneau.rest.widget.*;
 import org.apache.juneau.transforms.*;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.apache.juneau.rest.converters.*;
 
 /**
@@ -188,6 +189,7 @@ public class PetStoreResource extends BasicRest implements PetStore {
 	}
 
 	@Override /* PetStore */
+	@CrossOrigin(origins = "http://localhost:3000", maxAge = 3600)
 	@RestMethod(
 		name=GET,
 		path="/pet/{petId}",
