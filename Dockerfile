@@ -15,7 +15,7 @@ FROM maven:3.5-jdk-8 as build
 
 COPY . .
 
-RUN mvn clean package
+RUN mvn clean package -DskipTests
 
 FROM java:8
 
