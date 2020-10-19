@@ -71,7 +71,7 @@ public class Pet {
 		this.name = x.getName();
 		this.price = x.getPrice();
 		this.species = x.getSpecies();
-		this.tags = x.getTags() == null ? null : Arrays.asList(x.getTags());
+		this.tags = new ArrayList<>(Arrays.asList(x.getTags()));
 		return this;
 	}
 
@@ -86,7 +86,7 @@ public class Pet {
 		this.name = x.getName();
 		this.price = x.getPrice();
 		this.species = x.getSpecies();
-		this.tags = x.getTags() == null ? null : Arrays.asList(x.getTags());
+		this.tags = x.getTags() == null ? null : new ArrayList<>(Arrays.asList(x.getTags()));
 		this.status = x.getStatus();
 		return this;
 	}
@@ -180,7 +180,7 @@ public class Pet {
 	 * @return This object (for method chaining).
 	 */
 	public Pet tags(String...value) {
-		this.tags = Arrays.asList(value);
+		this.tags = new ArrayList<>(Arrays.asList(value));
 		return this;
 	}
 

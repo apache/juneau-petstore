@@ -12,7 +12,7 @@
 // ***************************************************************************************************************************
 package org.apache.juneau.petstore;
 
-import static org.apache.juneau.http.HttpMethodName.*;
+import static org.apache.juneau.http.HttpMethod.*;
 
 import java.util.*;
 

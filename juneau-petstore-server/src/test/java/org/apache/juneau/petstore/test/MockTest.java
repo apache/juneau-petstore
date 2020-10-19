@@ -1,11 +1,10 @@
 package org.apache.juneau.petstore.test;
 
-import java.io.IOException;
-import javax.servlet.ServletException;
 import org.apache.juneau.petstore.App;
-import org.apache.juneau.petstore.repository.UserRepository;
+import org.apache.juneau.petstore.dto.*;
 import org.apache.juneau.petstore.rest.PetStoreResource;
-import org.apache.juneau.rest.mock2.MockRest;
+import org.apache.juneau.rest.client2.*;
+import org.apache.juneau.rest.mock2.*;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -22,112 +21,99 @@ public class MockTest {
 
 	@Autowired
 	PetStoreResource petStoreResource;
-	MockRest petStoreRest;
-	UserRepository userRepository;
+
+	private RestClient petStoreRest;
 
 	@Before
 	public void setup() {
-
-		petStoreRest = MockRest.create(petStoreResource).simpleJson().build();
-
+		// Wrap our resource in a MockRest object for testing.
+		petStoreRest = MockRestClient.create(petStoreResource).simpleJson().build();
 	}
 
-	// -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+	// -----------------------------------------------------------------------------------------------------------------
 	// Pets
-	// -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-	private String createTestPet() throws AssertionError, ServletException, IOException {
+	// -----------------------------------------------------------------------------------------------------------------
 
-		String petId = petStoreRest
-				.post("/pet", "{name:'Sunshine',tags:['nice'], price:100.0,species:'BIRD'}")
-				.execute()
-				.assertStatus(200)
-				.getBodyAsString();
+	private int createTestPet() throws Exception {
+
+		int petId = petStoreRest
+			.post("/pet", new CreatePet().name("Sunshine").price(100f).species(Species.BIRD).tags("nice"))
+			.run()
+			.assertStatus().code().is(200)
+			.getBody().as(int.class);
 
 		return petId;
 	}
 
-	private void deleteTestPets() throws AssertionError, ServletException, IOException {
-
+	private void deleteTestPets() throws Exception {
 		petStoreRest
-		.delete("/pets")
-		.execute()
-		.assertStatus(200);
-
+			.delete("/pets")
+			.complete()  // Use complete() because we're not consuming response.
+			.assertStatus().code().is(200);
 	}
 
 	// Delete pet by Id
-
 	@Test
 	public void testDeletePet() throws Exception {
 
-		String petId = createTestPet();
+		int petId = createTestPet();
 		petStoreRest
-		.delete("/pet/" + petId)
-		.execute()
-		.assertStatus(200);
-
+			.delete("/pet/" + petId)
+			.complete()
+			.assertStatus().code().is(200);
 	}
 
 	// Getting all pets
-
 	@Test
 	public void testGettingPets() throws Exception {
 
-		String petId = createTestPet();
-
+		int petId = createTestPet();
 		petStoreRest
-		.get("/pet")
-		.execute()
-		.assertStatus(200)
-		.assertBody(
-				"[{id:" + petId + ",species:'BIRD',name:'Sunshine',tags:['nice'],price:100.0,status:'AVAILABLE'}]");
+			.get("/pet")
+			.run()
+			.assertStatus().code().is(200)
+			.assertBody().is("[{id:" + petId + ",species:'BIRD',name:'Sunshine',price:100.0,status:'AVAILABLE'}]");
+
 		deleteTestPets();
 	}
 
 	// Posting pet
-
 	@Test
 	public void testPostPet() throws Exception {
 
 		petStoreRest
-		.post("/pet", "{name:'Sunshine',tags:['nice'], price:100.0,species:'BIRD'}")
-		.execute()
-		.assertStatus(200);
+			.post("/pet", new CreatePet().name("Sunshine").price(100f).species(Species.BIRD).tags("nice"))
+			.complete()
+			.assertStatus().code().is(200);
 
 		deleteTestPets();
 	}
 
 	// Find pet by Id
-
 	@Test
 	public void testfindPet() throws Exception {
 
-		String petId = createTestPet();
-
+		int petId = createTestPet();
 		petStoreRest
-		.get("/pet/" + petId)
-		.execute()
-		.assertStatus(200)
-		.assertBody(
-				"{id:" + petId + ",species:'BIRD',name:'Sunshine',tags:['nice'],price:100.0,status:'AVAILABLE'}");
+			.get("/pet/" + petId)
+			.run()
+			.assertCode().is(200)
+			.assertBody().is("{id:" + petId + ",species:'BIRD',name:'Sunshine',tags:['nice'],price:100.0,status:'AVAILABLE'}");
 
 		deleteTestPets();
 
 	}
 
 	// Find pet by status
-
 	@Test
-	public void testfindPetByStatus() throws Exception {
+	public void testFindPetByStatus() throws Exception {
 
-		String petId = createTestPet();
-
+		int petId = createTestPet();
 		petStoreRest
-		.get("/pet/findByStatus?status=AVAILABLE")
-		.execute()
-		.assertStatus(200)
-		.assertBody(
-				"[{id:" + petId + ",species:'BIRD',name:'Sunshine',tags:['nice'],price:100.0,status:'AVAILABLE'}]");
+			.get("/pet/findByStatus?status=AVAILABLE")
+			.run()
+			.assertCode().is(200)
+			.assertBody().is("[{id:" + petId + ",species:'BIRD',name:'Sunshine',tags:['nice'],price:100.0,status:'AVAILABLE'}]");
 
 		deleteTestPets();
 	}
@@ -137,205 +123,207 @@ public class MockTest {
 	@Test
 	public void testUpdatePet() throws Exception {
 
-		String petId = createTestPet();
-
+		int petId = createTestPet();
 		petStoreRest
-				.put("/pet/" + petId,
-						"{id: " + petId
-								+ ",name:'Daisy1',price:1000.0,species:'BIRD'tags:['nice'], status:'AVAILABLE' }")
-				.execute()
-				.assertStatus(200);
+			.put(
+				"/pet/" + petId,
+				new UpdatePet().id(petId).name("Daisy1").price(1000f).species(Species.BIRD).status(PetStatus.AVAILABLE).tags("nice")
+			)
+			.complete()
+			.assertCode().is(200);
 
 		deleteTestPets();
-
 	}
 
-	// -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+	// -----------------------------------------------------------------------------------------------------------------
 	// Users
-	// -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+	// -----------------------------------------------------------------------------------------------------------------
 
-	private void deleteTestUsers() throws AssertionError, ServletException, IOException {
-
+	private void deleteTestUsers() throws Exception {
 		petStoreRest
-		.delete("/users/")
-		.execute()
-		.assertStatus(200);
-
+			.delete("/users/")
+			.complete()
+			.assertCode().is(200);
 	}
 
-	private String createTestUser(String username) throws AssertionError, ServletException, IOException {
-
+	private String createTestUser(String username) throws Exception {
 		petStoreRest
-				.post("/user", "{username:" + username + ",firstName: 'Tom',lastName: 'Simon', userStatus: 'ACTIVE'}")
-				.execute()
-				.assertStatus(200);
+			.post(
+				"/user",
+				new User().username(username).firstName("Tom").lastName("Simon").userStatus(UserStatus.ACTIVE)
+			)
+			.complete()
+			.assertCode().is(200);
 
 		return username;
 	}
 
 	// Create user
-
 	@Test
 	public void testCreateUser() throws Exception {
-
 		petStoreRest
-		.post("/user", "{username:'catlover',firstName: 'Tom',lastName: 'Simon', userStatus: 'ACTIVE'}")
-		.execute()
-		.assertStatus(200);
+			.post(
+				"/user",
+				new User().username("catlover").firstName("Tom").lastName("Simon").userStatus(UserStatus.ACTIVE)
+			)
+			.complete()
+			.assertCode().is(200);
 
 		deleteTestUsers();
 	}
 
 	// Delete user
-
 	@Test
 	public void testDeleteUser() throws Exception {
 
 		petStoreRest
-		.delete("/user/" + "catlover1")
-		.execute()
-		.assertStatus(200);
+			.delete("/user/" + "catlover1")
+			.complete()
+			.assertCode().is(200);
 
 	}
 
 	// Create list of users
-
 	@Test
 	public void testCreateUsers() throws Exception {
 
 		petStoreRest
-				.post("/user/createWithArray",
-						"[{username:'billy',firstName: 'Billy',lastName: 'Bob', userStatus: 'ACTIVE'},"
-								+ "{username:'peter',firstName: 'Peter',lastName: 'Adams', userStatus: 'ACTIVE'}]")
-				.execute()
-				.assertStatus(200);
+			.post(
+				"/user/createWithArray",
+				new User[] {
+					new User().username("billy").firstName("Billy").lastName("Bob").userStatus(UserStatus.ACTIVE),
+					new User().username("peter").firstName("Peter").lastName("Adams").userStatus(UserStatus.ACTIVE)
+				}
+			)
+			.complete()
+			.assertCode().is(200);
 
 		deleteTestUsers();
 	}
 
 	// Getting all users
-
 	@Test
 	public void testGettingUsers() throws Exception {
 
 		createTestUser("doglover");
 		petStoreRest
-		.get("/user")
-		.execute()
-		.assertStatus(200)
-		.assertBody("[{username:'doglover',firstName:'Tom',lastName:'Simon',userStatus:'ACTIVE'}]");
+			.get("/user")
+			.run()
+			.assertCode().is(200)
+			.assertBody().is("[{username:'doglover',firstName:'Tom',lastName:'Simon',userStatus:'ACTIVE'}]");
 
 		deleteTestUsers();
 	}
 
 	// Get user by user name
-
 	@Test
 	public void testFindUserByName() throws Exception {
 
 		createTestUser("garfield");
 		petStoreRest
-		.get("/user/garfield")
-		.execute()
-		.assertStatus(200)
-		.assertBody("{username:'garfield',firstName:'Tom',lastName:'Simon',userStatus:'ACTIVE'}");
+			.get("/user/garfield")
+			.run()
+			.assertCode().is(200)
+			.assertBody().is("{username:'garfield',firstName:'Tom',lastName:'Simon',userStatus:'ACTIVE'}");
 
 		deleteTestUsers();
 	}
 
 	// Updating user
-
 	@Test
 	public void testUpdateUser() throws Exception {
 
 		createTestUser("snoopy");
 		petStoreRest
-		.put("/user/snoopy", "{username:'snoopy',phone: '34562345'}")
-		.execute()
-		.assertStatus(200);
+			.put(
+				"/user/snoopy",
+				new User().username("snoopy").phone("34562345")
+			)
+			.complete()
+			.assertCode().is(200);
 
 		deleteTestUsers();
 	}
 
-//-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+	// -----------------------------------------------------------------------------------------------------------------
 	// Orders
-	// -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-	private void deleteTestOrders() throws AssertionError, ServletException, IOException {
+	// -----------------------------------------------------------------------------------------------------------------
 
+	private void deleteTestOrders() throws Exception {
 		petStoreRest
-		.delete("/orders")
-		.execute()
-		.assertStatus(200);
-
+			.delete("/orders")
+			.complete()
+			.assertCode().is(200);
 	}
 
-	private String createTestOrder() throws AssertionError, ServletException, IOException {
+	private int createTestOrder() throws Exception {
 
-		String petId = createTestPet();
-		String orderId = petStoreRest
-				.post("/store/order", "{petId:" + petId + " + ,username: 'catlover'}")
-				.execute()
-				.assertStatus(200)
-				.getBodyAsString();
+		int petId = createTestPet();
+		int orderId = petStoreRest
+			.post(
+				"/store/order",
+				new CreateOrder().petId(petId).username("catlover")
+			)
+			.run()
+			.assertCode().is(200)
+			.getBody().as(int.class);
 
 		return orderId;
 	}
 
 	// Posting order
-
 	@Test
 	public void testPostOrder() throws Exception {
 
 		petStoreRest
-		.post("/store/order", "{petId:'1',username: 'snoopy'}")
-		.execute()
-		.assertStatus(200);
+			.post(
+				"/store/order",
+				new CreateOrder().petId(1).username("snoopy")
+			)
+			.complete()
+			.assertCode().is(200);
 
 		deleteTestOrders();
 
 	}
 
 	// Getting all orders
-
 	@Test
 	public void testGettingOrders() throws Exception {
 
-		String orderId = createTestOrder();
+		int orderId = createTestOrder();
 		petStoreRest
-		.get("/store/order")
-		.execute()
-		.assertStatus(200)
-		.assertBody("[{id:" + orderId + ",petId:0,status:'PLACED'}]");
+			.get("/store/order")
+			.run()
+			.assertCode().is(200)
+			.assertBody().is("[{id:" + orderId + ",petId:0,status:'PLACED'}]");
 
 		deleteTestOrders();
 
 	}
 
 	// Find order by Id
-
 	@Test
 	public void testfindOrder() throws Exception {
 
-		String orderId = createTestOrder();
+		int orderId = createTestOrder();
 		petStoreRest
-		.get("/store/order/" + orderId)
-		.execute()
-		.assertStatus(200)
-		.assertBody("{id:" + orderId + ",petId:0,status:'PLACED'}");
+			.get("/store/order/" + orderId)
+			.run()
+			.assertCode().is(200)
+			.assertBody().is("{id:" + orderId + ",petId:0,status:'PLACED'}");
 
 		deleteTestOrders();
 	}
 
 	// Delete order by Id
-
 	@Test
 	public void testDeleteOrder() throws Exception {
 
-		String orderId = createTestOrder();
+		int orderId = createTestOrder();
 		petStoreRest
-		.delete("/store/order/" + orderId)
-		.execute()
-		.assertStatus(200);
-
+			.delete("/store/order/" + orderId)
+			.complete()
+			.assertCode().is(200);
 	}
 }

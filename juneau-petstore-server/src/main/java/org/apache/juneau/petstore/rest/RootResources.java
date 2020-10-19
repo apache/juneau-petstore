@@ -16,7 +16,6 @@ import org.apache.juneau.html.annotation.*;
 import org.apache.juneau.rest.*;
 import org.apache.juneau.rest.annotation.*;
 import org.apache.juneau.rest.widget.*;
-import org.apache.juneau.serializer.annotation.*;
 
 /**
  * Sample REST resource showing how to implement a "router" resource page.

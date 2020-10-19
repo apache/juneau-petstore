@@ -13,7 +13,7 @@
 package org.apache.juneau.petstore.rest;
 
 import static org.apache.juneau.dto.swagger.ui.SwaggerUI.*;
-import static org.apache.juneau.http.HttpMethodName.*;
+import static org.apache.juneau.http.HttpMethod.*;
 import static org.apache.juneau.http.response.Ok.*;
 
 import java.util.*;

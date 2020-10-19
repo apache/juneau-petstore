@@ -17,16 +17,11 @@ import static java.text.MessageFormat.*;
 import java.io.*;
 import java.util.*;
 
-import org.apache.http.auth.AuthScope;
-import org.apache.http.auth.Credentials;
-import org.apache.http.auth.UsernamePasswordCredentials;
-import org.apache.http.client.CredentialsProvider;
-import org.apache.http.impl.client.BasicCredentialsProvider;
 import org.apache.juneau.json.*;
 import org.apache.juneau.marshall.*;
 import org.apache.juneau.parser.*;
 import org.apache.juneau.petstore.dto.*;
-import org.apache.juneau.rest.client.*;
+import org.apache.juneau.rest.client2.*;
 
 /**
  * Example code showing how to connect to the PetStore application using a remote proxy.
@@ -39,36 +34,22 @@ public class Main {
 
 	private static final JsonParser JSON_PARSER = JsonParser.create().ignoreUnknownBeanProperties().build();
 
-	@SuppressWarnings("deprecation")
-	public static void main(String[] args) {
+	public static void main(String[] args) throws ParseException, IOException {
 
-		// TODO - This is broken until we can update to Juneau 8.1.3 which has a fix for handling how Spring Security
-		// processes Basic Auth requests.
+		RestClient restClient = RestClient.create().simpleJson().basicAuth("localhost", 5000, "admin", "password").build();
 
-		// Set up BASIC auth.
-		// User/passwords are hardcoded in SpringSecurityConfig.
-		Credentials up = new UsernamePasswordCredentials("admin", "password");
-		CredentialsProvider p = new BasicCredentialsProvider();
-		p.setCredentials(AuthScope.ANY, up);
+		// Instantiate our proxy.
+		PetStore petStore = restClient.getRemote(PetStore.class, "http://localhost:5000");
 
-		// Create a RestClient with JSON serialization support.
-		try (RestClient rc = RestClient.create(SimpleJsonSerializer.class, JsonParser.class).defaultCredentialsProvider(p).build()) {
+		// Print out the pets in the store.
+		Collection<Pet> pets = petStore.getPets();
 
-			// Instantiate our proxy.
-			PetStore petStore = rc.getRemote(PetStore.class, "http://localhost:5000");
+		// Pretty-print them to SYSOUT.
+		SimpleJson.DEFAULT_READABLE.println(pets);
 
-			// Print out the pets in the store.
-			Collection<Pet> pets = petStore.getPets();
+		// Initialize the application through REST calls.
+		init(new PrintWriter(System.out), petStore);
 
-			// Pretty-print them to SYSOUT.
-			SimpleJson.DEFAULT_READABLE.println(pets);
-
-			// Initialize the application through REST calls.
-			init(new PrintWriter(System.out), petStore);
-
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
 	}
 
 	/**

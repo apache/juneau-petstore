@@ -10,40 +10,9 @@
 // * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.  See the License for the        *
 // * specific language governing permissions and limitations under the License.                                              *
 // ***************************************************************************************************************************
-package org.apache.juneau.petstore;
 
-import java.io.*;
-
-import org.apache.juneau.petstore.service.*;
-import org.apache.juneau.rest.springboot.JuneauRestInitializer;
-import org.springframework.boot.autoconfigure.SpringBootApplication;
-import org.springframework.boot.builder.SpringApplicationBuilder;
-import org.springframework.cache.annotation.EnableCaching;
-import org.springframework.context.*;
-import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
-
-/**
- * Entry point for PetStore application.
- */
-@SpringBootApplication
-@EnableJpaRepositories(basePackages = "org.apache.juneau.petstore")
-@EnableCaching
-@SuppressWarnings("javadoc")
-public class App {
-
-	public static void main(String[] args) {
-		new App().start(args);
-	}
-
-	protected void start(String[] args) {
-		ConfigurableApplicationContext ctx = new SpringApplicationBuilder(App.class)
-			.initializers(new JuneauRestInitializer(App.class)) // Needed for Juneau resources as injectible Spring beans.
-			.run(args);
-
-		try {
-			ctx.getBean(PetStoreService.class).initDirect(new PrintWriter(System.out));
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-	}
-}
+[
+	{id:101,petId:101,shipDate:'2018-01-01',status:'PLACED'},
+	{id:102,petId:102,shipDate:'2018-01-01',status:'APPROVED'},
+	{id:103,petId:103,shipDate:'2018-01-01',status:'DELIVERED'}
+]
