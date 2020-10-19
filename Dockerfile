@@ -19,7 +19,7 @@ RUN mvn clean package -DskipTests
 
 FROM java:8
 
-COPY --from=build ./juneau-petstore-server/target/juneau-petstore-server-8.1.2-SNAPSHOT.war ./run.war
+COPY --from=build ./juneau-petstore-server/target/juneau-petstore-server-8.2.0-SNAPSHOT.war ./run.war
 
 EXPOSE 5000
 

@@ -19,7 +19,7 @@
 
     <groupId>org.apache.juneau.petstore</groupId>
     <artifactId>juneau-petstore</artifactId>
-    <version>8.1.2-SNAPSHOT</version>
+    <version>8.2.0-SNAPSHOT</version>
     <packaging>pom</packaging>
     <name>Apache Juneau Petstore Application</name>
     <description>Sample application for demonstrating Apache Juneau.</description>
