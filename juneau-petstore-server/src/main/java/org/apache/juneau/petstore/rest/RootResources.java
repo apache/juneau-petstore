@@ -30,18 +30,15 @@ import org.apache.juneau.rest.widget.*;
 	description="Example of a router resource page.",
 	children={
 		PetStoreResource.class
-	},
-	debug="true"
+	}
 )
 @HtmlDocConfig(
 	widgets={
-		ContentTypeMenuItem.class,
-		ThemeMenuItem.class
+		ContentTypeMenuItem.class
 	},
 	navlinks={
 		"options: ?method=OPTIONS",
 		"$W{ContentTypeMenuItem}",
-		"$W{ThemeMenuItem}",
 		"source: $C{Source/gitHub}/org/apache/juneau/petstore/rest/$R{servletClassSimple}.java"
 	},
 	aside={
@@ -55,12 +52,6 @@ import org.apache.juneau.rest.widget.*;
 		"</div>"
 	}
 )
-/*@SerializerConfig(
-	// For testing purposes, we want to use single quotes in all the serializers so it's easier to do simple
-	// String comparisons.
-	// You can apply any of the Serializer/Parser/BeanContext settings this way.
-	quoteChar="'"
-) */
 public class RootResources extends BasicRestServletGroup {
 	private static final long serialVersionUID = 1L;
 }

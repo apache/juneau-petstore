@@ -19,13 +19,11 @@ import static org.apache.juneau.http.response.Ok.*;
 import java.util.*;
 import java.util.Map;
 
-import javax.inject.*;
-
 import org.apache.juneau.jsonschema.annotation.*;
 import org.apache.juneau.petstore.*;
 import org.apache.juneau.petstore.dto.*;
 import org.apache.juneau.petstore.service.*;
-import org.apache.juneau.*;
+import org.apache.juneau.Value;
 import org.apache.juneau.annotation.*;
 import org.apache.juneau.html.annotation.*;
 import org.apache.juneau.http.annotation.*;
@@ -36,6 +34,7 @@ import org.apache.juneau.rest.helper.*;
 import org.apache.juneau.http.response.*;
 import org.apache.juneau.rest.widget.*;
 import org.apache.juneau.transforms.*;
+import org.springframework.beans.factory.annotation.*;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.apache.juneau.rest.converters.*;
 
@@ -129,7 +128,7 @@ import org.apache.juneau.rest.converters.*;
 )
 public class PetStoreResource extends BasicRest implements PetStore {
 
-	@Inject
+	@Autowired
 	private PetStoreService store;
 
 	/**

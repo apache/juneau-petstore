@@ -12,67 +12,37 @@
 // ***************************************************************************************************************************
 package org.apache.juneau.petstore;
 
-import java.util.Arrays;
 
 import org.apache.juneau.petstore.rest.*;
 import org.apache.juneau.petstore.service.*;
 import org.apache.juneau.rest.springboot.annotation.JuneauRestRoot;
-import org.springframework.boot.web.servlet.*;
 import org.springframework.context.annotation.*;
-import org.springframework.web.cors.CorsConfiguration;
-import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
-import org.springframework.web.filter.*;
 
 @SuppressWarnings("javadoc")
 @Configuration
 public class AppConfiguration {
 
-    //-----------------------------------------------------------------------------------------------------------------
-    // Services
-    //-----------------------------------------------------------------------------------------------------------------
+	//-----------------------------------------------------------------------------------------------------------------
+	// Services
+	//-----------------------------------------------------------------------------------------------------------------
 
-    @Bean
-    public PetStoreService petStoreService() {
-        return new PetStoreService();
-    }
-
-    //-----------------------------------------------------------------------------------------------------------------
-    // REST
-    //-----------------------------------------------------------------------------------------------------------------
-
-    @Bean
-    @JuneauRestRoot
-    public RootResources rootResources() {
-        return new RootResources();
-    }
-
-    @Bean
-    public PetStoreResource petStoreResource() {
-        return new PetStoreResource();
-    }
-
-	/**
-	 * We want to be able to consume url-encoded-form-post bodies, but HiddenHttpMethodFilter triggers the HTTP
-	 * body to be consumed.  So disable it.
-	 *
-	 * @param filter The filter.
-	 * @return Filter registration bean.
-	 */
 	@Bean
-	public FilterRegistrationBean<HiddenHttpMethodFilter> registration(HiddenHttpMethodFilter filter) {
-	    FilterRegistrationBean<HiddenHttpMethodFilter> registration = new FilterRegistrationBean<>(filter);
-	    registration.setEnabled(false);
-	    return registration;
+	public PetStoreService petStoreService() {
+		return new PetStoreService();
 	}
+
+	//-----------------------------------------------------------------------------------------------------------------
+	// REST
+	//-----------------------------------------------------------------------------------------------------------------
+
 	@Bean
-	  public CorsFilter corsFilter() {
-	      UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
-	      CorsConfiguration config = new CorsConfiguration();
-	      config.setAllowCredentials(true);
-	      config.addAllowedOrigin("*");
-	      config.setAllowedMethods(Arrays.asList("POST", "OPTIONS", "GET", "DELETE", "PUT"));
-	      config.setAllowedHeaders(Arrays.asList("X-Requested-With", "Origin", "Content-Type", "Accept", "Authorization"));
-	      source.registerCorsConfiguration("/**", config);
-	      return new CorsFilter(source);
-	  }
+	@JuneauRestRoot
+	public RootResources rootResources2() {
+		return new RootResources();
+	}
+
+	@Bean
+	public PetStoreResource petStoreResource() {
+		return new PetStoreResource();
+	}
 }
