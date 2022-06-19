@@ -97,19 +97,16 @@ import org.apache.juneau.rest.converters.*;
 			)
 		}
 	),
-	debug="true",
 	staticFiles={"htdocs:/htdocs"}  // Expose static files in htdocs subpackage.
 )
 @HtmlDocConfig(
 	widgets={
-		ContentTypeMenuItem.class,
-		ThemeMenuItem.class,
+		ContentTypeMenuItem.class
 	},
 	navlinks={
 		"up: request:/..",
 		"options: servlet:/?method=OPTIONS",
 		"$W{ContentTypeMenuItem}",
-		"$W{ThemeMenuItem}",
 		"source: $C{Source/gitHub}/org/apache/juneau/petstore/rest/$R{servletClassSimple}.java"
 	},
 	head={

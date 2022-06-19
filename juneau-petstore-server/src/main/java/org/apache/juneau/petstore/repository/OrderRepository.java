@@ -8,4 +8,4 @@ import org.springframework.stereotype.Repository;
  * TODO - Needs documentation
  */
 @Repository
-public interface OrderRepository  extends JpaRepository <Order, Long>{}
+public interface OrderRepository extends JpaRepository <Order, Long>{}
