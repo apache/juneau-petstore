@@ -13,8 +13,8 @@
 package org.apache.juneau.petstore.dto;
 
 import org.apache.juneau.*;
-import org.apache.juneau.http.*;
-import org.apache.juneau.transform.*;
+import org.apache.juneau.http.header.MediaType;
+import org.apache.juneau.swap.StringSwap;
 
 /**
  * Swap for {@link PetTag} beans.
@@ -23,7 +23,7 @@ import org.apache.juneau.transform.*;
  * 	<li class='extlink'>{@source}
  * </ul>
  */
-public class PetTagNameSwap extends PojoSwap<PetTag,String> {
+public class PetTagNameSwap extends StringSwap<PetTag> {
 
 	/**
 	 * Swap PetTag with name.

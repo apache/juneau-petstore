@@ -23,12 +23,13 @@ import org.apache.juneau.http.annotation.*;
  * 	<li class='extlink'>{@source}
  * </ul>
  */
-@ResponseHeader(
+@Header(
 	name="X-Expires-After",
-	type="string",
-	format="date-time",
-	description="Date in UTC when token expires",
-	example="2012-10-21"
+	schema=@Schema(
+		type="string",
+		format="date-time",
+		description="Date in UTC when token expires"
+	)
 )
 public class ExpiresAfter {
 	private final Calendar c;

@@ -20,9 +20,9 @@ import javax.persistence.*;
 
 import org.apache.juneau.annotation.*;
 import org.apache.juneau.html.annotation.*;
+import org.apache.juneau.http.annotation.Schema;
 import org.apache.juneau.internal.*;
-import org.apache.juneau.jsonschema.annotation.*;
-import org.apache.juneau.transforms.*;
+import org.apache.juneau.swaps.TemporalDateSwap;
 
 /**
  * Order bean.
@@ -31,7 +31,7 @@ import org.apache.juneau.transforms.*;
  * 	<li class='extlink'>{@source}
  * </ul>
  */
-@Bean(fluentSetters=true, properties="id,petId,username,status,shipDate")
+@Bean(findFluentSetters=true, properties="id,petId,username,status,shipDate")
 @Example("{id:123,petId:456,shipDate:'2012-12-21',status:'APPROVED'}")
 @Entity(name="PetstoreOrder")
 public class Order {
@@ -188,7 +188,7 @@ public class Order {
 			.username("sampleuser")
 			.petId(456)
 			.status(OrderStatus.APPROVED)
-			.shipDate(DateUtils.parseISO8601("2020-10-10"))
+			.shipDate(DateUtils.parseISO8601Calendar("2020-10-10").getTime())
 		;
 	}
 }

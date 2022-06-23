@@ -13,7 +13,7 @@
 package org.apache.juneau.petstore.dto;
 
 import org.apache.juneau.http.annotation.*;
-import org.apache.juneau.http.exception.*;
+import org.apache.juneau.http.response.BadRequest;
 
 /**
  * Exception thrown when an invalid species is looked up.
@@ -23,7 +23,7 @@ import org.apache.juneau.http.exception.*;
  * </ul>
  */
 @SuppressWarnings("serial")
-@Response(description="Invalid species provided")
+@Response(schema=@Schema(description="Invalid species provided"))
 public class InvalidSpecies extends BadRequest {
 
 	/**

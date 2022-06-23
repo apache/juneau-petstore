@@ -24,7 +24,7 @@ import org.apache.juneau.internal.*;
  * 	<li class='extlink'>{@source}
  * </ul>
  */
-@Bean(typeName="Tag", fluentSetters=true)
+@Bean(typeName="Tag", findFluentSetters=true)
 @Swap(PetTagNameSwap.class)
 public class PetTag {
 	private long id;

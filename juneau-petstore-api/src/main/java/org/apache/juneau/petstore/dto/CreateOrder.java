@@ -21,7 +21,7 @@ import org.apache.juneau.annotation.*;
  * 	<li class='extlink'>{@source}
  * </ul>
  */
-@Bean(fluentSetters=true, properties="petId,username")
+@Bean(findFluentSetters=true, properties="petId,username")
 public class CreateOrder {
 
 	private long petId;

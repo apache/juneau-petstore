@@ -21,7 +21,7 @@ import javax.persistence.*;
 import org.apache.juneau.annotation.*;
 import org.apache.juneau.html.*;
 import org.apache.juneau.html.annotation.*;
-import org.apache.juneau.jsonschema.annotation.*;
+import org.apache.juneau.http.annotation.Schema;
 import org.apache.juneau.serializer.*;
 
 /**
@@ -31,7 +31,7 @@ import org.apache.juneau.serializer.*;
  * 	<li class='extlink'>{@source}
  * </ul>
  */
-@Bean(typeName="Pet", fluentSetters=true, properties="id,species,name,tags,price,status")
+@Bean(typeName="Pet", findFluentSetters=true, properties="id,species,name,tags,price,status")
 @Entity(name="PetstorePet")
 public class Pet {
 
@@ -54,7 +54,7 @@ public class Pet {
 	private Species species;
 
 	@ElementCollection(fetch=FetchType.EAGER) @OrderColumn
-	@Schema(description="Pet attributes.", example="friendly,smart")
+	@Schema(description="Pet attributes.")
 	private List<String> tags;
 
 	@Column @Enumerated(STRING)

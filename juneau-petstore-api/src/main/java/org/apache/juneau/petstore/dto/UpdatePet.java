@@ -13,7 +13,7 @@
 package org.apache.juneau.petstore.dto;
 
 import org.apache.juneau.annotation.*;
-import org.apache.juneau.jsonschema.annotation.*;
+import org.apache.juneau.http.annotation.Schema;
 
 /**
  * Bean for updating {@link Pet} objects.
@@ -22,7 +22,7 @@ import org.apache.juneau.jsonschema.annotation.*;
  * 	<li class='extlink'>{@source}
  * </ul>
  */
-@Bean(fluentSetters=true, properties="id,name,price,species,tags,status")
+@Bean(findFluentSetters=true, properties="id,name,price,species,tags,status")
 public class UpdatePet extends CreatePet {
 
 	@Schema(description="Pet identifier.", minimum="1")

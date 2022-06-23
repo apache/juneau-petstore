@@ -41,7 +41,7 @@
 
 		<maven.javadoc.skip>true</maven.javadoc.skip>
 
-		<juneau.version>8.2.0</juneau.version>
+		<juneau.version>9.0.0-SNAPSHOT</juneau.version>
 	</properties>
 
 	<packaging>war</packaging>

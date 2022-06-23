@@ -13,8 +13,9 @@
 package org.apache.juneau.petstore.rest;
 
 import org.apache.juneau.html.annotation.*;
-import org.apache.juneau.rest.*;
 import org.apache.juneau.rest.annotation.*;
+import org.apache.juneau.rest.config.*;
+import org.apache.juneau.rest.servlet.*;
 import org.apache.juneau.rest.widget.*;
 
 /**
@@ -37,7 +38,8 @@ import org.apache.juneau.rest.widget.*;
 		ContentTypeMenuItem.class
 	},
 	navlinks={
-		"options: ?method=OPTIONS",
+		"api: servlet:/api",
+		"stats: servlet:/stats",
 		"$W{ContentTypeMenuItem}",
 		"source: $C{Source/gitHub}/org/apache/juneau/petstore/rest/$R{servletClassSimple}.java"
 	},
@@ -52,6 +54,6 @@ import org.apache.juneau.rest.widget.*;
 		"</div>"
 	}
 )
-public class RootResources extends BasicRestServletGroup {
+public class RootResources extends BasicRestServletGroup implements BasicUniversalConfig {
 	private static final long serialVersionUID = 1L;
 }

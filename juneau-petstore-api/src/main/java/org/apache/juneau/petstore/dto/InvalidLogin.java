@@ -13,7 +13,7 @@
 package org.apache.juneau.petstore.dto;
 
 import org.apache.juneau.http.annotation.*;
-import org.apache.juneau.http.exception.*;
+import org.apache.juneau.http.response.Unauthorized;
 
 /**
  * Exception thrown when an invalid username or password is provided.
@@ -23,7 +23,7 @@ import org.apache.juneau.http.exception.*;
  * </ul>
  */
 @SuppressWarnings("serial")
-@Response(description="Invalid username or password provided")
+@Response(schema=@Schema(description="Invalid username or password provided"))
 public class InvalidLogin extends Unauthorized {
 
 	/**

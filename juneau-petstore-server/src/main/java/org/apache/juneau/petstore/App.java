@@ -14,13 +14,18 @@ package org.apache.juneau.petstore;
 
 import java.io.*;
 
+import javax.servlet.*;
+
+import org.apache.juneau.petstore.rest.*;
 import org.apache.juneau.petstore.service.*;
-import org.apache.juneau.rest.springboot.JuneauRestInitializer;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.builder.SpringApplicationBuilder;
+import org.springframework.boot.web.servlet.*;
 import org.springframework.cache.annotation.EnableCaching;
 import org.springframework.context.*;
+import org.springframework.context.annotation.*;
 import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
+import org.springframework.stereotype.*;
 
 /**
  * Entry point for PetStore application.
@@ -29,21 +34,43 @@ import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 @EnableJpaRepositories(basePackages = "org.apache.juneau.petstore")
 @EnableCaching
 @SuppressWarnings("javadoc")
+@Controller
 public class App {
 
+	//-----------------------------------------------------------------------------------------------------------------
+	// Beans
+	//-----------------------------------------------------------------------------------------------------------------
+
 	public static void main(String[] args) {
-		new App().start(args);
-	}
-
-	protected void start(String[] args) {
-		ConfigurableApplicationContext ctx = new SpringApplicationBuilder(App.class)
-			.initializers(new JuneauRestInitializer(App.class)) // Needed for Juneau resources as injectible Spring beans.
-			.run(args);
-
 		try {
+			ConfigurableApplicationContext ctx = new SpringApplicationBuilder(App.class).run(args);
 			ctx.getBean(PetStoreService.class).initDirect(new PrintWriter(System.out));
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
+	}
+
+	//-----------------------------------------------------------------------------------------------------------------
+	// Beans
+	//-----------------------------------------------------------------------------------------------------------------
+
+	@Bean
+	public PetStoreService petStoreService() {
+		return new PetStoreService();
+	}
+
+	@Bean
+	public RootResources rootResources() {
+		return new RootResources();
+	}
+
+	@Bean
+	public PetStoreResource petStoreResource() {
+		return new PetStoreResource();
+	}
+
+	@Bean
+	public ServletRegistrationBean<Servlet> getRootServlet(RootResources rootResources) {
+		return new ServletRegistrationBean<>(rootResources, "/*");
 	}
 }

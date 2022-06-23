@@ -13,7 +13,7 @@
 package org.apache.juneau.petstore.dto;
 
 import org.apache.juneau.annotation.*;
-import org.apache.juneau.jsonschema.annotation.*;
+import org.apache.juneau.http.annotation.Schema;
 
 /**
  * Bean for creating {@link Pet} objects.
@@ -22,7 +22,7 @@ import org.apache.juneau.jsonschema.annotation.*;
  * 	<li class='extlink'>{@source}
  * </ul>
  */
-@Bean(fluentSetters=true, properties="name,price,species,tags")
+@Bean(findFluentSetters=true, properties="name,price,species,tags")
 public class CreatePet {
 
 	@Schema(description="Pet name.", minLength=3, maxLength=50)
@@ -34,7 +34,7 @@ public class CreatePet {
 	@Schema(description="Pet species.")
 	private Species species;
 
-	@Schema(description="Pet attributes.", example="friendly,smart")
+	@Schema(description="Pet attributes.")
 	private String[] tags;
 
 	/**

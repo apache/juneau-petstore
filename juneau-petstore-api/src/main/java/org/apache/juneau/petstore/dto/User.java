@@ -18,7 +18,7 @@ import javax.persistence.*;
 
 import org.apache.juneau.annotation.*;
 import org.apache.juneau.html.annotation.*;
-import org.apache.juneau.jsonschema.annotation.*;
+import org.apache.juneau.http.annotation.Schema;
 
 /**
  * User bean.
@@ -27,7 +27,7 @@ import org.apache.juneau.jsonschema.annotation.*;
  * 	<li class='extlink'>{@source}
  * </ul>
  */
-@Bean(typeName="User", fluentSetters=true, properties="username,firstName,lastName,email,password,phone,userStatus")
+@Bean(typeName="User", findFluentSetters=true, properties="username,firstName,lastName,email,password,phone,userStatus")
 @Entity(name="PetstoreUser")
 public class User {
 

@@ -12,14 +12,11 @@
 // ***************************************************************************************************************************
 package org.apache.juneau.petstore.rest;
 
-import static org.apache.juneau.dto.swagger.ui.SwaggerUI.*;
-import static org.apache.juneau.http.HttpMethod.*;
 import static org.apache.juneau.http.response.Ok.*;
 
 import java.util.*;
 import java.util.Map;
 
-import org.apache.juneau.jsonschema.annotation.*;
 import org.apache.juneau.petstore.*;
 import org.apache.juneau.petstore.dto.*;
 import org.apache.juneau.petstore.service.*;
@@ -29,14 +26,14 @@ import org.apache.juneau.html.annotation.*;
 import org.apache.juneau.http.annotation.*;
 import org.apache.juneau.rest.*;
 import org.apache.juneau.rest.annotation.*;
-import org.apache.juneau.http.exception.*;
-import org.apache.juneau.rest.helper.*;
+import org.apache.juneau.rest.beans.*;
+import org.apache.juneau.rest.config.*;
+import org.apache.juneau.rest.converter.*;
+import org.apache.juneau.rest.servlet.*;
 import org.apache.juneau.http.response.*;
 import org.apache.juneau.rest.widget.*;
-import org.apache.juneau.transforms.*;
+import org.apache.juneau.swaps.*;
 import org.springframework.beans.factory.annotation.*;
-import org.springframework.web.bind.annotation.CrossOrigin;
-import org.apache.juneau.rest.converters.*;
 
 /**
  * Sample Petstore application.
@@ -52,11 +49,7 @@ import org.apache.juneau.rest.converters.*;
 		"This is a sample server Petstore server based on the Petstore sample at Swagger.io.",
 		"You can find out more about Swagger at http://swagger.io.",
 	},
-	properties= {
-		// Resolve recursive references when showing schema info in the swagger.
-		@Property(name=SWAGGERUI_resolveRefsMaxDepth, value="99")
-	},
-	swagger=@ResourceSwagger(
+	swagger=@Swagger(
 		version="1.0.0",
 		title="Swagger Petstore",
 		termsOfService="You are on your own.",
@@ -95,8 +88,7 @@ import org.apache.juneau.rest.converters.*;
 				)
 			)
 		}
-	),
-	staticFiles={"htdocs:/htdocs"}  // Expose static files in htdocs subpackage.
+	)
 )
 @HtmlDocConfig(
 	widgets={
@@ -104,7 +96,8 @@ import org.apache.juneau.rest.converters.*;
 	},
 	navlinks={
 		"up: request:/..",
-		"options: servlet:/?method=OPTIONS",
+		"api: servlet:/api",
+		"stats: servlet:/stats",
 		"$W{ContentTypeMenuItem}",
 		"source: $C{Source/gitHub}/org/apache/juneau/petstore/rest/$R{servletClassSimple}.java"
 	},
@@ -112,8 +105,8 @@ import org.apache.juneau.rest.converters.*;
 		"<link rel='icon' href='$U{servlet:/htdocs/cat.png}'/>"  // Add a cat icon to the page.
 	},
 	header={
-		"<h1>$R{resourceTitle}</h1>",
-		"<h2>$R{methodSummary}</h2>",
+		"<h1>$RS{title}</h1>",  // Use @Rest(title)
+		"<h2>$RS{operationSummary,description}</h2>", // Use either @RestOp(summary) or @Rest(description)
 		"$C{PetStore/headerImage}"
 	},
 	aside={
@@ -126,7 +119,7 @@ import org.apache.juneau.rest.converters.*;
 	},
 	stylesheet="servlet:/htdocs/themes/dark.css"  // Use dark theme by default.
 )
-public class PetStoreResource extends BasicRest implements PetStore {
+public class PetStoreResource extends BasicRestObject implements BasicUniversalConfig, PetStore {
 
 	@Autowired
 	private PetStoreService store;
@@ -136,8 +129,7 @@ public class PetStoreResource extends BasicRest implements PetStore {
 	 *
 	 * @return Navigation page contents.
 	 */
-	@RestMethod(
-		name=GET,
+	@RestGet(
 		path="/",
 		summary="Navigation page"
 	)
@@ -165,11 +157,10 @@ public class PetStoreResource extends BasicRest implements PetStore {
 	//-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
 	@Override /* PetStore */
-	@RestMethod(
-		name=GET,
+	@RestGet(
 		path="/pet",
 		summary="All pets in the store",
-		swagger=@MethodSwagger(
+		swagger=@OpSwagger(
 			tags="pet",
 			parameters={
 				Queryable.SWAGGER_PARAMS  // Documents searching.
@@ -177,21 +168,17 @@ public class PetStoreResource extends BasicRest implements PetStore {
 		),
 		converters={Queryable.class}  // Searching support.
 	)
-	@BeanConfig(
-		bpx="Pet: tags,photo"  // In this view, don't serialize tags/photos properties.
-	)
+	@Bean(on="Pet", excludeProperties="tags,photo")
 	public Collection<Pet> getPets() throws NotAcceptable {
 		return store.getPets();
 	}
 
 	@Override /* PetStore */
-	@CrossOrigin(origins = "http://localhost:3000", maxAge = 3600)
-	@RestMethod(
-		name=GET,
+	@RestGet(
 		path="/pet/{petId}",
 		summary="Find pet by ID",
 		description="Returns a single pet",
-		swagger=@MethodSwagger(
+		swagger=@OpSwagger(
 			tags="pet"
 		)
 	)
@@ -200,11 +187,10 @@ public class PetStoreResource extends BasicRest implements PetStore {
 	}
 
 	@Override /* PetStore */
-	@RestMethod(
-		name=POST,
+	@RestPost(
 		path="/pet",
 		summary="Add a new pet to the store",
-		swagger=@MethodSwagger(
+		swagger=@OpSwagger(
 			tags="pet"
 		)
 		//roleGuard="ROLE_ADMIN || (ROLE_USER && ROLE_WRITABLE)"  // Restrict access to this method.
@@ -214,11 +200,10 @@ public class PetStoreResource extends BasicRest implements PetStore {
 	}
 
 	@Override /* PetStore */
-	@RestMethod(
-		name=PUT,
+	@RestPut(
 		path="/pet/{petId}",
 		summary="Update an existing pet",
-		swagger=@MethodSwagger(
+		swagger=@OpSwagger(
 			tags="pet"
 		)
 	)
@@ -228,12 +213,11 @@ public class PetStoreResource extends BasicRest implements PetStore {
 	}
 
 	@Override /* PetStore */
-	@RestMethod(
-		name=GET,
+	@RestGet(
 		path="/pet/findByStatus",
 		summary="Finds Pets by status",
 		description="Multiple status values can be provided with comma separated strings.",
-		swagger=@MethodSwagger(
+		swagger=@OpSwagger(
 			tags="pet"
 		)
 	)
@@ -242,11 +226,10 @@ public class PetStoreResource extends BasicRest implements PetStore {
 	}
 
 	@Override /* PetStore */
-	@RestMethod(
-		name=DELETE,
+	@RestDelete(
 		path="/pet/{petId}",
 		summary="Deletes a pet",
-		swagger=@MethodSwagger(
+		swagger=@OpSwagger(
 			tags="pet"
 		)
 	)
@@ -256,8 +239,7 @@ public class PetStoreResource extends BasicRest implements PetStore {
 	}
 
 	@Override /* PetStore */
-	@RestMethod(
-		name=DELETE,
+	@RestDelete(
 		path="/pets",
 		summary="Delete all pets",
 		description="This can be done only by the logged in user."
@@ -276,9 +258,9 @@ public class PetStoreResource extends BasicRest implements PetStore {
 	 *
 	 * @return Store navigation page contents.
 	 */
-	@RestMethod(
+	@RestGet(
 		summary="Store navigation page",
-		swagger=@MethodSwagger(
+		swagger=@OpSwagger(
 			tags="store"
 		)
 	)
@@ -290,11 +272,10 @@ public class PetStoreResource extends BasicRest implements PetStore {
 	}
 
 	@Override /* PetStore */
-	@RestMethod(
-		name=GET,
+	@RestGet(
 		path="/store/order",
 		summary="Petstore orders",
-		swagger=@MethodSwagger(
+		swagger=@OpSwagger(
 			tags="store"
 		)
 	)
@@ -313,12 +294,11 @@ public class PetStoreResource extends BasicRest implements PetStore {
 	}
 
 	@Override /* PetStore */
-	@RestMethod(
-		name=GET,
+	@RestGet(
 		path="/store/order/{orderId}",
 		summary="Find purchase order by ID",
 		description="Returns a purchase order by ID.",
-		swagger=@MethodSwagger(
+		swagger=@OpSwagger(
 			tags="store"
 		)
 	)
@@ -329,16 +309,15 @@ public class PetStoreResource extends BasicRest implements PetStore {
 	}
 
 	@Override /* PetStore */
-	@RestMethod(
-		name=POST,
+	@RestPost(
 		path="/store/order",
 		summary="Place an order for a pet",
-		swagger=@MethodSwagger(
+		swagger=@OpSwagger(
 			tags="store"
-		),
-		pojoSwaps={
-			TemporalDateSwap.IsoLocalDate.class
-		}
+		)
+	)
+	@BeanConfig(
+		swaps = TemporalDateSwap.IsoLocalDate.class
 	)
 	public long placeOrder(long petId, String username) throws IdConflict, NotAcceptable, UnsupportedMediaType {
 		CreateOrder co = new CreateOrder(petId, username);
@@ -346,15 +325,14 @@ public class PetStoreResource extends BasicRest implements PetStore {
 	}
 
 	@Override /* PetStore */
-	@RestMethod(
-		name=DELETE,
+	@RestDelete(
 		path="/store/order/{orderId}",
 		summary="Delete purchase order by ID",
 		description= {
 			"For valid response try integer IDs with positive integer value.",
 			"Negative or non-integer values will generate API errors."
 		},
-		swagger=@MethodSwagger(
+		swagger=@OpSwagger(
 			tags="store"
 		)
 	)
@@ -366,8 +344,7 @@ public class PetStoreResource extends BasicRest implements PetStore {
 	}
 
 	@Override /* PetStore */
-	@RestMethod(
-		name=DELETE,
+	@RestDelete(
 		path="/orders",
 		summary="Delete all orders",
 		description="This can be done only by the logged in user."
@@ -378,12 +355,11 @@ public class PetStoreResource extends BasicRest implements PetStore {
 	}
 
 	@Override /* PetStore */
-	@RestMethod(
-		name=GET,
+	@RestGet(
 		path="/store/inventory",
 		summary="Returns pet inventories by status",
 		description="Returns a map of status codes to quantities",
-		swagger=@MethodSwagger(
+		swagger=@OpSwagger(
 			tags="store",
 			responses={
 				"200:{ 'x-example':{AVAILABLE:123} }",
@@ -399,25 +375,23 @@ public class PetStoreResource extends BasicRest implements PetStore {
 	//-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
 	@Override /* PetStore */
-	@RestMethod(
-		name=GET,
+	@RestGet(
 		path="/user",
 		summary="Petstore users",
-		bpx="User: email,password,phone",
-		swagger=@MethodSwagger(
+		swagger=@OpSwagger(
 			tags="user"
 		)
 	)
+	@Bean(on="User", excludeProperties="email,password,phone")
 	public Collection<User> getUsers() throws NotAcceptable {
 		return store.getUsers();
 	}
 
 	@Override /* PetStore */
-	@RestMethod(
-		name=GET,
+	@RestGet(
 		path="/user/{username}",
 		summary="Get user by user name",
-		swagger=@MethodSwagger(
+		swagger=@OpSwagger(
 			tags="user"
 		)
 	)
@@ -426,12 +400,11 @@ public class PetStoreResource extends BasicRest implements PetStore {
 	}
 
 	@Override /* PetStore */
-	@RestMethod(
-		name=POST,
+	@RestPost(
 		path="/user",
 		summary="Create user",
 		description="This can only be done by the logged in user.",
-		swagger=@MethodSwagger(
+		swagger=@OpSwagger(
 			tags="user"
 		)
 	)
@@ -441,11 +414,10 @@ public class PetStoreResource extends BasicRest implements PetStore {
 	}
 
 	@Override /* PetStore */
-	@RestMethod(
-		name=POST,
+	@RestPost(
 		path="/user/createWithArray",
 		summary="Creates list of users with given input array",
-		swagger=@MethodSwagger(
+		swagger=@OpSwagger(
 			tags="user"
 		)
 	)
@@ -456,12 +428,11 @@ public class PetStoreResource extends BasicRest implements PetStore {
 	}
 
 	@Override /* PetStore */
-	@RestMethod(
-		name=PUT,
+	@RestPut(
 		path="/user/{username}",
 		summary="Update user",
 		description="This can only be done by the logged in user.",
-		swagger=@MethodSwagger(
+		swagger=@OpSwagger(
 			tags="user"
 		)
 	)
@@ -471,12 +442,11 @@ public class PetStoreResource extends BasicRest implements PetStore {
 	}
 
 	@Override /* PetStore */
-	@RestMethod(
-		name=DELETE,
+	@RestDelete(
 		path="/user/{username}",
 		summary="Delete user",
 		description="This can only be done by the logged in user.",
-		swagger=@MethodSwagger(
+		swagger=@OpSwagger(
 			tags="user"
 		)
 	)
@@ -486,8 +456,7 @@ public class PetStoreResource extends BasicRest implements PetStore {
 	}
 
 	@Override /* PetStore */
-	@RestMethod(
-		name=DELETE,
+	@RestDelete(
 		path="/users",
 		summary="Delete all users",
 		description="This can be done only by the admin."
@@ -498,18 +467,16 @@ public class PetStoreResource extends BasicRest implements PetStore {
 	}
 
 	@Override /* PetStore */
-	@RestMethod(
-		name=GET,
+	@RestGet(
 		path="/user/login",
 		summary="Logs user into the system",
-		swagger=@MethodSwagger(
+		swagger=@OpSwagger(
 			tags="user"
 		)
 	)
 	public Ok login(
 			String username,
 			String password,
-			Value<Integer> rateLimit,
 			Value<ExpiresAfter> expiresAfter
 		) throws InvalidLogin, NotAcceptable {
 
@@ -520,17 +487,15 @@ public class PetStoreResource extends BasicRest implements PetStore {
 
 		Date d = new Date(System.currentTimeMillis() + 30 * 60 * 1000);
 		req.getSession().setAttribute("login-expires", d);
-		rateLimit.set(1000);
 		expiresAfter.set(new ExpiresAfter(d));
 		return OK;
 	}
 
 	@Override /* PetStore */
-	@RestMethod(
-		name=GET,
+	@RestGet(
 		path="/user/logout",
 		summary="Logs out current logged in user session",
-		swagger=@MethodSwagger(
+		swagger=@OpSwagger(
 			tags="user"
 		)
 	)

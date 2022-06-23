@@ -13,7 +13,7 @@
 package org.apache.juneau.petstore.dto;
 
 import org.apache.juneau.http.annotation.*;
-import org.apache.juneau.http.exception.*;
+import org.apache.juneau.http.response.BadRequest;
 
 /**
  * Exception thrown when trying to add an entry where the ID is already in use.
@@ -23,7 +23,7 @@ import org.apache.juneau.http.exception.*;
  * </ul>
  */
 @SuppressWarnings("serial")
-@Response(description="Invalid username provided")
+@Response(schema=@Schema(description="Invalid username provided"))
 public class InvalidUsername extends BadRequest {
 
 	/**

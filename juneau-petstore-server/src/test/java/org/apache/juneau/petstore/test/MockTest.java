@@ -3,8 +3,8 @@ package org.apache.juneau.petstore.test;
 import org.apache.juneau.petstore.App;
 import org.apache.juneau.petstore.dto.*;
 import org.apache.juneau.petstore.rest.PetStoreResource;
-import org.apache.juneau.rest.client2.*;
-import org.apache.juneau.rest.mock2.*;
+import org.apache.juneau.rest.client.*;
+import org.apache.juneau.rest.mock.*;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -39,8 +39,8 @@ public class MockTest {
 		int petId = petStoreRest
 			.post("/pet", new CreatePet().name("Sunshine").price(100f).species(Species.BIRD).tags("nice"))
 			.run()
-			.assertStatus().code().is(200)
-			.getBody().as(int.class);
+			.assertStatus().asCode().is(200)
+			.getContent().as(int.class);
 
 		return petId;
 	}
@@ -49,7 +49,7 @@ public class MockTest {
 		petStoreRest
 			.delete("/pets")
 			.complete()  // Use complete() because we're not consuming response.
-			.assertStatus().code().is(200);
+			.assertStatus().asCode().is(200);
 	}
 
 	// Delete pet by Id
@@ -60,7 +60,7 @@ public class MockTest {
 		petStoreRest
 			.delete("/pet/" + petId)
 			.complete()
-			.assertStatus().code().is(200);
+			.assertStatus().asCode().is(200);
 	}
 
 	// Getting all pets
@@ -71,8 +71,8 @@ public class MockTest {
 		petStoreRest
 			.get("/pet")
 			.run()
-			.assertStatus().code().is(200)
-			.assertBody().is("[{id:" + petId + ",species:'BIRD',name:'Sunshine',price:100.0,status:'AVAILABLE'}]");
+			.assertStatus().asCode().is(200)
+			.assertContent().is("[{id:" + petId + ",species:'BIRD',name:'Sunshine',price:100.0,status:'AVAILABLE'}]");
 
 		deleteTestPets();
 	}
@@ -84,7 +84,7 @@ public class MockTest {
 		petStoreRest
 			.post("/pet", new CreatePet().name("Sunshine").price(100f).species(Species.BIRD).tags("nice"))
 			.complete()
-			.assertStatus().code().is(200);
+			.assertStatus().asCode().is(200);
 
 		deleteTestPets();
 	}
@@ -98,7 +98,7 @@ public class MockTest {
 			.get("/pet/" + petId)
 			.run()
 			.assertCode().is(200)
-			.assertBody().is("{id:" + petId + ",species:'BIRD',name:'Sunshine',tags:['nice'],price:100.0,status:'AVAILABLE'}");
+			.assertContent().is("{id:" + petId + ",species:'BIRD',name:'Sunshine',tags:['nice'],price:100.0,status:'AVAILABLE'}");
 
 		deleteTestPets();
 
@@ -113,7 +113,7 @@ public class MockTest {
 			.get("/pet/findByStatus?status=AVAILABLE")
 			.run()
 			.assertCode().is(200)
-			.assertBody().is("[{id:" + petId + ",species:'BIRD',name:'Sunshine',tags:['nice'],price:100.0,status:'AVAILABLE'}]");
+			.assertContent().is("[{id:" + petId + ",species:'BIRD',name:'Sunshine',tags:['nice'],price:100.0,status:'AVAILABLE'}]");
 
 		deleteTestPets();
 	}
@@ -210,7 +210,7 @@ public class MockTest {
 			.get("/user")
 			.run()
 			.assertCode().is(200)
-			.assertBody().is("[{username:'doglover',firstName:'Tom',lastName:'Simon',userStatus:'ACTIVE'}]");
+			.assertContent().is("[{username:'doglover',firstName:'Tom',lastName:'Simon',userStatus:'ACTIVE'}]");
 
 		deleteTestUsers();
 	}
@@ -224,7 +224,7 @@ public class MockTest {
 			.get("/user/garfield")
 			.run()
 			.assertCode().is(200)
-			.assertBody().is("{username:'garfield',firstName:'Tom',lastName:'Simon',userStatus:'ACTIVE'}");
+			.assertContent().is("{username:'garfield',firstName:'Tom',lastName:'Simon',userStatus:'ACTIVE'}");
 
 		deleteTestUsers();
 	}
@@ -266,7 +266,7 @@ public class MockTest {
 			)
 			.run()
 			.assertCode().is(200)
-			.getBody().as(int.class);
+			.getContent().as(int.class);
 
 		return orderId;
 	}
@@ -296,7 +296,7 @@ public class MockTest {
 			.get("/store/order")
 			.run()
 			.assertCode().is(200)
-			.assertBody().is("[{id:" + orderId + ",petId:0,status:'PLACED'}]");
+			.assertContent().is("[{id:" + orderId + ",petId:0,status:'PLACED'}]");
 
 		deleteTestOrders();
 
@@ -311,7 +311,7 @@ public class MockTest {
 			.get("/store/order/" + orderId)
 			.run()
 			.assertCode().is(200)
-			.assertBody().is("{id:" + orderId + ",petId:0,status:'PLACED'}");
+			.assertContent().is("{id:" + orderId + ",petId:0,status:'PLACED'}");
 
 		deleteTestOrders();
 	}
